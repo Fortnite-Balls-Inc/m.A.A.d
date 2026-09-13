@@ -1,4 +1,4 @@
-package com.projecti.lexer;
+package com.compiler.lexer;
 
 /**
  * A single lexical token.
@@ -26,9 +26,6 @@ public final class Token {
     public int getLine()          { return line; }
     public int getColumn()        { return column; }
 
-    public String getStringValue() {
-        return (value instanceof String s) ? s : null;
-    }
     public Integer getIntValue() {
         return (value instanceof Integer i) ? i : null;
     }
