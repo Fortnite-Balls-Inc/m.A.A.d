@@ -188,8 +188,11 @@ public final class Lexer {
 
         String text = sb.toString();
         try {
-            return makeToken(isReal ? TokenConstants.REAL_LITERAL : TokenConstants.INTEGER_LITERAL,
-                             isReal ? Double.parseDouble(text) : Integer.parseInt(text));
+            if (isReal) {
+                return makeToken(TokenConstants.REAL_LITERAL, Double.parseDouble(text));
+            } else {
+                return makeToken(TokenConstants.INTEGER_LITERAL, Integer.parseInt(text));
+            }
         } catch (NumberFormatException e) {
             return makeToken(TokenConstants.UNKNOWN, text);
         }

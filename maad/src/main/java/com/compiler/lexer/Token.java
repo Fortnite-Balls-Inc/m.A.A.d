@@ -21,17 +21,30 @@ public final class Token {
         this(type, null, line, column);
     }
 
-    public int getType()          { return type; }
-    public Object getValue()      { return value; }
-    public int getLine()          { return line; }
-    public int getColumn()        { return column; }
+    public int getType()  { 
+        return type;
+    }
+
+    public Object getValue()  {
+        return value;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
+    }
 
     public Integer getIntValue() {
         return (value instanceof Integer i) ? i : null;
     }
+
     public Double getRealValue() {
         return (value instanceof Double d) ? d : null;
     }
+
     public Boolean getBooleanValue() {
         return (value instanceof Boolean b) ? b : null;
     }
