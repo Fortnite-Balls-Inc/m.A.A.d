@@ -5,7 +5,7 @@ routine printBoolean(b : boolean) is
 end
 
 routine main() is
-    print x                      // 3.0
+    print x                      // 3.0
     var arr : array[3.2] integer
     print arr.length             // 3
 

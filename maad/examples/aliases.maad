@@ -7,14 +7,14 @@ var distance_cm : Centimeters is 200
 var time_s      : Seconds     is 30
 
 routine CalculateSpeed(distance : Meters, time : Seconds) : real is
-    return distance / time
+    return distance / time
 end
 
 routine Main() is
-    var i : integer is distance_m
-    print CalculateSpeed(distance_m, time_s)
-    distance_cm := distance_m
-    distance_m := 50
-    CalculateSpeed(distance_cm, time_s)
-    CalculateSpeed(distance_m, 10)
+    var i : integer is distance_m
+    print CalculateSpeed(distance_m, time_s)
+    distance_cm := distance_m
+    distance_m := 50
+    CalculateSpeed(distance_cm, time_s)
+    CalculateSpeed(distance_m, 10)
 end

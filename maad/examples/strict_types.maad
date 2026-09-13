@@ -1,24 +1,24 @@
 type Point is record
-    var x : integer; var y : integer
+    var x : integer; var y : integer
 end
 type Coordinate is record
-    var x : integer; var y : integer
+    var x : integer; var y : integer
 end
 
 var p1 : Point is record
-    var x : integer is 10; var y : integer is 20
+    var x : integer is 10; var y : integer is 20
 end
 var p2 : Coordinate is record
-    var x : integer is 30; var y : integer is 40
+    var x : integer is 30; var y : integer is 40
 end
 
 routine PrintPoint(p : Point) is
-    print p.x, p.y
+    print p.x, p.y
 end
 
 routine Main() is
-    PrintPoint(p1)
-    // These would be type errors:
-    // PrintPoint(p2)
-    // p1 := p2
+    PrintPoint(p1)
+    // These would be type errors:
+    // PrintPoint(p2)
+    // p1 := p2
 end
