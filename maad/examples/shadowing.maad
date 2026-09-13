@@ -1,0 +1,15 @@
+var n is 10         // type: integer
+
+routine main()
+    print n         // 10
+
+    var n : real is 3.14
+    print n         // 3.14
+
+    if true then
+        var n : boolean
+        print n     // false
+    end
+
+    print n         // 3.14
+end

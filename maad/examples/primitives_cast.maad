@@ -1,0 +1,16 @@
+var x is 1 + 2.0
+
+routine printBoolean(b : boolean) is
+    print b
+end
+
+routine main() is
+    print x                      // 3.0
+    var arr : array[3.2] integer
+    print arr.length             // 3
+
+    var arr2 : array[true + true] integer
+    print arr2.length            // 2
+
+    printBoolean(1)              // true
+end

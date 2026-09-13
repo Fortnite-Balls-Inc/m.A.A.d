@@ -1,0 +1,23 @@
+var squares : array[6] integer
+
+routine FillSquares() is
+    for i in 1 .. 6 loop
+        squares[i] := i * i
+    end
+end
+
+routine SumArray() : integer is
+    var sum : integer is 0
+    for square in squares loop
+        sum := sum + square
+    end
+    return sum
+end
+
+routine Main() is
+    FillSquares()
+    for i in 1 .. squares.length reverse loop
+        print squares[i]
+    end
+    print SumArray()
+end

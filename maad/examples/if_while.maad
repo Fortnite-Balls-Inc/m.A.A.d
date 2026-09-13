@@ -1,0 +1,25 @@
+var numbers : array[5] integer
+var max_val : integer is 0
+var index   : integer is 1
+
+routine InitializeArray() is
+    numbers[1] := 3; numbers[2] := 7
+    numbers[3] := 2; numbers[4] := 9; numbers[5] := 5
+end
+
+routine FindMax() is
+    max_val := numbers[1]
+    index := 2
+    while index <= numbers.length loop
+        if numbers[index] > max_val then
+            max_val := numbers[index]
+        end
+        index := index + 1
+    end
+end
+
+routine Main() is
+    InitializeArray()
+    FindMax()
+    print max_val // 9
+end

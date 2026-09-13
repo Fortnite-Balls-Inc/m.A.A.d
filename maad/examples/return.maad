@@ -1,0 +1,14 @@
+// Short function returning real
+routine square(x : real) : integer => x*x
+
+// Function not returning a value
+routine bar()
+    return
+end
+
+// Function with body returning integer
+routine main() : integer is
+    print square(10) // 100.0
+
+    return 0
+end

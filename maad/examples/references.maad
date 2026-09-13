@@ -1,0 +1,25 @@
+type point is record
+    var x : real
+    var y : real
+end
+
+routine change_point(p : Point)
+    p = new point{ x is 20.0 }
+end
+
+routine change_array(a : array[] integer)
+    a[1] := 200
+end
+
+routine main()
+    var p : point
+    print p       // null
+    change_point(p)
+    // since we pass the value of reference:
+    print p       // null
+
+    var a : array[10] integer
+    print a[1]    // 0
+    change_array(a)
+    print a[1]    // 200
+end
