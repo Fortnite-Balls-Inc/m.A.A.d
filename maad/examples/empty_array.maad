@@ -1,0 +1,8 @@
+routine main() : integer is
+    var a array[2] array[] integer
+    
+    a[1] = array[100] integer
+    a[2] = array[200] integer 
+
+    return 0
+end

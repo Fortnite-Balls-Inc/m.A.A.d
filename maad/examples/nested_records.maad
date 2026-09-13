@@ -1,0 +1,25 @@
+type Address is record
+    var street : integer
+    var city : integer
+end
+
+type Person is record
+    var name : integer
+    var age : integer
+    var address : Address
+end
+
+routine Main() is
+    var p : Person
+    p.name := 1
+    p.age := 30
+    // will cause runtime error
+    // p.address.street := 123
+    p.address := record
+        var street : 1
+        var city : 2
+    end
+ 
+    print p.name, p.age
+    print p.address.street, p.address.city
+end

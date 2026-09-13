@@ -1,0 +1,8 @@
+routine First() is
+    Second(20)
+end
+
+routine Second(n : integer) is
+    var arr : array[n] integer
+    print arr.length
+end

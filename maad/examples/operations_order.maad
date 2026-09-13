@@ -1,0 +1,7 @@
+var y : integer is 4
+var z : integer is 3
+var w : integer is 2
+
+routine Main() is    
+    print (z - y) * z + w / 2 = -2 / 1 // true
+end

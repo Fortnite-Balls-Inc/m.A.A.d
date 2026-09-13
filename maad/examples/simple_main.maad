@@ -1,0 +1,7 @@
+var n is 10         // type: integer
+
+routine main(scale : real) : integer is
+    n := n * scale  // real → integer
+    print n
+    return 0
+end
