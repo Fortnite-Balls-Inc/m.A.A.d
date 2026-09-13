@@ -5,6 +5,6 @@ routine GetCurrentTotal() : integer => counter + 10
 var total : integer is GetCurrentTotal()
 
 routine Increment() is
-    counter := counter + 1
-    print counter, total
+    counter := counter + 1
+    print counter, total
 end
