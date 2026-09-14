@@ -4,7 +4,9 @@ type point is record
 end
 
 routine change_point(p : Point)
-    p = new point{ x is 20.0 }
+    p := record 
+        var x is 20.0
+    end
 end
 
 routine change_array(a : array[] integer)

@@ -6,6 +6,6 @@ routine Factorial(n : integer) : integer is
     end
 end
 
-routine Main(int n) is
+routine Main(n : integer) is
     print Factorial(n)
 end

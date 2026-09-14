@@ -26,52 +26,53 @@ public final class TokenConstants {
     public static final int IN      = 12;
     public static final int REVERSE = 13;
     public static final int RETURN  = 14;
-    public static final int PRINT   = 15;
-    public static final int RECORD  = 16;
-    public static final int ARRAY   = 17;
-    public static final int INTEGER = 18;
-    public static final int REAL    = 19;
-    public static final int BOOLEAN = 20;
-    public static final int TRUE    = 21;
-    public static final int FALSE   = 22;
-    public static final int NULL    = 23;
+    public static final int PRINT   = 16;
+    public static final int RECORD  = 17;
+    public static final int ARRAY   = 18;
+    public static final int INTEGER = 19;
+    public static final int REAL    = 20;
+    public static final int BOOLEAN = 21;
+    public static final int TRUE    = 22;
+    public static final int FALSE   = 23;
+    public static final int NULL    = 24;
 
     // Identifiers and literals
-    public static final int IDENTIFIER      = 24;
-    public static final int INTEGER_LITERAL = 25;
-    public static final int REAL_LITERAL    = 26;
+    public static final int IDENTIFIER      = 25;
+    public static final int INTEGER_LITERAL = 26;
+    public static final int REAL_LITERAL    = 27;
 
     // Operators and punctuation
-    public static final int ASSIGN    = 27;  // :=
-    public static final int COLON     = 28;  // :
-    public static final int EQ        = 29;  // =
-    public static final int NEQ       = 30;  // /=
-    public static final int LT        = 31;  // <
-    public static final int LE        = 32;  // <=
-    public static final int GT        = 33;  // >
-    public static final int GE        = 34;  // >=
-    public static final int PLUS      = 35;  // +
-    public static final int MINUS     = 36;  // -
-    public static final int STAR      = 37;  // *
-    public static final int SLASH     = 38;  // /
-    public static final int PERCENT   = 39;  // %
-    public static final int LPAREN    = 40;  // (
-    public static final int RPAREN    = 41;  // )
-    public static final int LBRACKET  = 42;  // [
-    public static final int RBRACKET  = 43;  // ]
-    public static final int DOT       = 44;  // .
-    public static final int DOTDOT    = 45;  // ..
-    public static final int COMMA     = 46;  // ,
-    public static final int SEMICOLON = 47;  // ;
+    public static final int RETIMM    = 15;  // =>
+    public static final int ASSIGN    = 28;  // :=
+    public static final int COLON     = 29;  // :
+    public static final int EQ        = 30;  // =
+    public static final int NEQ       = 31;  // /=
+    public static final int LT        = 32;  // <
+    public static final int LE        = 33;  // <=
+    public static final int GT        = 34;  // >
+    public static final int GE        = 35;  // >=
+    public static final int PLUS      = 36;  // +
+    public static final int MINUS     = 37;  // -
+    public static final int STAR      = 38;  // *
+    public static final int SLASH     = 39;  // /
+    public static final int PERCENT   = 40;  // %
+    public static final int LPAREN    = 41;  // (
+    public static final int RPAREN    = 42;  // )
+    public static final int LBRACKET  = 43;  // [
+    public static final int RBRACKET  = 44;  // ]
+    public static final int DOT       = 45;  // .
+    public static final int DOTDOT    = 46;  // ..
+    public static final int COMMA     = 47;  // ,
+    public static final int SEMICOLON = 48;  // ;
 
     // Logical operators
-    public static final int AND = 48;
-    public static final int OR  = 49;
-    public static final int XOR = 50;
-    public static final int NOT = 51;
+    public static final int AND = 49;
+    public static final int OR  = 50;
+    public static final int XOR = 51;
+    public static final int NOT = 52;
 
     // Error
-    public static final int UNKNOWN = 52;
+    public static final int UNKNOWN = 53;
 
     /** Human-readable name for error messages and debugging. */
     public static String name(int tokenType) {
@@ -91,6 +92,7 @@ public final class TokenConstants {
             case IN -> "in";
             case REVERSE -> "reverse";
             case RETURN -> "return";
+            case RETIMM -> "=>";
             case PRINT -> "print";
             case RECORD -> "record";
             case ARRAY -> "array";

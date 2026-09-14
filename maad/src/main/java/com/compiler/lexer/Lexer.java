@@ -7,28 +7,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>Reads characters from a {@link Reader} and produces {@link Token}s
- * one at a time via {@link #nextToken()}.
- *
- * <p>The lexer tracks line and column numbers (both 1-based) so that
- * error messages can point to the exact source location.
+ * Reads characters from a {@link Reader} and produces {@link Token}s one at a time via {@link #nextToken()}.
+ * <p>The lexer tracks line and column numbers (both 1-based) so that error messages can point to the exact
+ * source location.
  */
 public final class Lexer {
+
     private final PushbackReader reader;
 
     // Current position
     private int line = 1;
     private int column = 1;
-    
+
     // Token start position (captured before scanning a token)
     private int tokenLine;
     private int tokenColumn;
 
     private static final Map<String, Integer> KEYWORDS = new HashMap<>();    // Keyword lookup table
 
-    public Lexer(Reader reader) {
-        this.reader = new PushbackReader(reader, 2);
+    /** Sentinel returned by {@link #read()} at end of input. {@code '\uFFFF'} is a Unicode non-character. */
+    private static final char EOF = '\uFFFF';
 
+    static {
         KEYWORDS.put("routine", TokenConstants.ROUTINE);
         KEYWORDS.put("var",     TokenConstants.VAR);
         KEYWORDS.put("type",    TokenConstants.TYPE);
@@ -58,6 +58,10 @@ public final class Lexer {
         KEYWORDS.put("not",     TokenConstants.NOT);
     }
 
+    public Lexer(Reader reader) {
+        this.reader = new PushbackReader(reader, 2);
+    }
+
     // to get rid of each time passing line and column into token's constructor:
     private Token makeToken(int type) {
         return new Token(type, tokenLine, tokenColumn);
@@ -74,18 +78,20 @@ public final class Lexer {
      */
     public Token nextToken() throws IOException {
         skipWhitespaceAndComments();
-
         // Capture position before reading the first character
         tokenLine = line;
         tokenColumn = column;
 
-        int ch = read();
-        if (ch == -1) return makeToken(TokenConstants.EOF);
+        char ch = read();
+        if (ch == EOF) return makeToken(TokenConstants.EOF);
         if (Character.isLetter(ch) || ch == '_') return scanIdentifier(ch);
         if (Character.isDigit(ch)) return scanNumber(ch);
+        return scanOperator(ch);
+    }
 
-        int next; // lookahead variable for all two-char operators
-        switch (ch) { // operators and punctuation
+    private Token scanOperator(char ch) throws IOException {
+        char next;
+        switch (ch) {
             case ':':
                 next = read();
                 if (next == '=') return makeToken(TokenConstants.ASSIGN);
@@ -115,8 +121,13 @@ public final class Lexer {
                 if (next == '.') return makeToken(TokenConstants.DOTDOT);
                 unread(next);
                 return makeToken(TokenConstants.DOT);
-            
-            case '=': return makeToken(TokenConstants.EQ);
+
+            case '=':
+                next = read();
+                if (next == '>') return makeToken(TokenConstants.RETIMM);
+                unread(next);
+                return makeToken(TokenConstants.EQ);
+
             case '+': return makeToken(TokenConstants.PLUS);
             case '-': return makeToken(TokenConstants.MINUS);
             case '*': return makeToken(TokenConstants.STAR);
@@ -127,17 +138,17 @@ public final class Lexer {
             case ']': return makeToken(TokenConstants.RBRACKET);
             case ',': return makeToken(TokenConstants.COMMA);
             case ';': return makeToken(TokenConstants.SEMICOLON);
-            default: return makeToken(TokenConstants.UNKNOWN, String.valueOf((char) ch));
+            default : return makeToken(TokenConstants.UNKNOWN, String.valueOf(ch));
         }
     }
 
-    private Token scanIdentifier(int firstChar) throws IOException {
-        StringBuilder sb = new StringBuilder().append((char) firstChar);
+    private Token scanIdentifier(char firstChar) throws IOException {
+        StringBuilder sb = new StringBuilder().append(firstChar);
 
         while (true) {
-            int ch = read();
+            char ch = read();
             if (Character.isLetterOrDigit(ch) || ch == '_') {
-                sb.append((char) ch);
+                sb.append(ch);
             } else {
                 unread(ch);
                 break;
@@ -147,35 +158,33 @@ public final class Lexer {
         String text = sb.toString();
         Integer keywordType = KEYWORDS.get(text);
 
-        if (keywordType != null) return switch (keywordType) {
-            case TokenConstants.TRUE -> makeToken(TokenConstants.TRUE, Boolean.TRUE);
-            case TokenConstants.FALSE -> makeToken(TokenConstants.FALSE, Boolean.FALSE);
-            case TokenConstants.NULL -> makeToken(TokenConstants.NULL, null);
-            default -> makeToken(keywordType);
-        };
+        if (keywordType != null) {
+            return switch (keywordType) {
+                case TokenConstants.TRUE -> makeToken(TokenConstants.TRUE, Boolean.TRUE);
+                case TokenConstants.FALSE -> makeToken(TokenConstants.FALSE, Boolean.FALSE);
+                case TokenConstants.NULL -> makeToken(TokenConstants.NULL, null);
+                default -> makeToken(keywordType);
+            };
+        }
 
         return makeToken(TokenConstants.IDENTIFIER, text);
     }
 
-    private Token scanNumber(int first) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        sb.append((char) first);
+    private Token scanNumber(char first) throws IOException {
+        StringBuilder sb = new StringBuilder().append(first);
 
         boolean isReal = false;
-
         while (true) {
-            int ch = read();
+            char ch = read();
             if (Character.isDigit(ch)) {
-                sb.append((char) ch);
+                sb.append(ch);
             } else if (ch == '.' && !isReal) {
-                // Look ahead: a real number must have a digit after the dot
-                int after = read();
+                char after = read();  // a real number must have a digit after the dot
                 if (Character.isDigit(after)) {
                     isReal = true;
-                    sb.append('.');
-                    sb.append((char) after);
-                } else {
-                    // It's a DOT e.g., record access, not a decimal point ????????
+                    sb.append(ch);
+                    sb.append(after);
+                } else { // not a decimal point (syntax error or ..)
                     unread(after);
                     unread(ch);
                     break;
@@ -200,23 +209,23 @@ public final class Lexer {
 
     private void skipWhitespaceAndComments() throws IOException {
         while (true) {
-            int ch = read();
-            if (ch == -1) return;
+            char ch = read();
+            if (ch == EOF) return;
 
             if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') {
                 continue;
             }
 
             if (ch == '/') {
-                int next = read();
+                char next = read();
                 if (next == '/') {
                     while (true) {
                         ch = read();
-                        if (ch == -1 || ch == '\n') break;
+                        if (ch == EOF || ch == '\n') break;
                     }
                     continue;
                 }
-                // Not a comment, push back both characters
+                // it's division, push back both characters
                 unread(next);
                 unread(ch);
                 return;
@@ -226,12 +235,10 @@ public final class Lexer {
         }
     }
 
-    /**
-     * Reads one character, updating line/column tracking. Returns -1 at end of input.
-     */
-    private int read() throws IOException {
+    /** Reads one character, updating line/column tracking. Returns {@link #EOF} at end of input. */
+    private char read() throws IOException {
         int ch = reader.read();
-        if (ch == -1) return -1;
+        if (ch == -1) return EOF;
 
         if (ch == '\n') {
             line++;
@@ -239,19 +246,16 @@ public final class Lexer {
         } else {
             column++;
         }
-        return ch;
+        return (char) ch;
     }
 
-    /**
-     * Pushes one character back, undoing line/column tracking.
-     */
-    private void unread(int ch) throws IOException {
-        if (ch == -1) return;
+    /** Pushes one character back, undoing line/column tracking. */
+    private void unread(char ch) throws IOException {
+        if (ch == EOF) return;
         reader.unread(ch);
 
-        // line/column rollback (only accurate for non-newline chars)
         if (ch == '\n') {
-            line--;
+            line--; // after unread() anyway there will be read() that will set proper column
         } else {
             column--;
         }
