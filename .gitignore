@@ -1,5 +1,5 @@
 .github
-/maad/target
-/maad/generated
+target
+generated
 notes.txt
-/.vscode
+.vscode
