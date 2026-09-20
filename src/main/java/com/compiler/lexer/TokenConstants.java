@@ -71,8 +71,11 @@ public final class TokenConstants {
     public static final int XOR = 51;
     public static final int NOT = 52;
 
+    // Newline
+    public static final int NEWLINE = 53;
+
     // Error
-    public static final int UNKNOWN = 53;
+    public static final int UNKNOWN = 54;
 
     /** Human-readable name for error messages and debugging. */
     public static String name(int tokenType) {
@@ -130,6 +133,7 @@ public final class TokenConstants {
             case OR -> "or";
             case XOR -> "xor";
             case NOT -> "not";
+            case NEWLINE -> "newline";
             default -> "unknown(" + tokenType + ")";
         };
     }
