@@ -138,6 +138,7 @@ public final class Lexer {
             case ']': return makeToken(TokenConstants.RBRACKET);
             case ',': return makeToken(TokenConstants.COMMA);
             case ';': return makeToken(TokenConstants.SEMICOLON);
+            case '\n': return makeToken(TokenConstants.NEWLINE);
             default : return makeToken(TokenConstants.UNKNOWN, String.valueOf(ch));
         }
     }
@@ -212,7 +213,7 @@ public final class Lexer {
             char ch = read();
             if (ch == EOF) return;
 
-            if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n') {
+            if (ch == ' ' || ch == '\t' || ch == '\r') {
                 continue;
             }
 
