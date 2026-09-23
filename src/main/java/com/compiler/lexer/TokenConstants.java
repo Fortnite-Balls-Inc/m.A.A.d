@@ -35,47 +35,46 @@ public final class TokenConstants {
     public static final int TRUE    = 22;
     public static final int FALSE   = 23;
     public static final int NULL    = 24;
+    public static final int NEW     = 25;
 
     // Identifiers and literals
-    public static final int IDENTIFIER      = 25;
-    public static final int INTEGER_LITERAL = 26;
-    public static final int REAL_LITERAL    = 27;
+    public static final int IDENTIFIER      = 26;
+    public static final int INTEGER_LITERAL = 27;
+    public static final int REAL_LITERAL    = 28;
 
     // Operators and punctuation
-    public static final int RETIMM    = 15;  // =>
-    public static final int ASSIGN    = 28;  // :=
-    public static final int COLON     = 29;  // :
-    public static final int EQ        = 30;  // =
-    public static final int NEQ       = 31;  // /=
-    public static final int LT        = 32;  // <
-    public static final int LE        = 33;  // <=
-    public static final int GT        = 34;  // >
-    public static final int GE        = 35;  // >=
-    public static final int PLUS      = 36;  // +
-    public static final int MINUS     = 37;  // -
-    public static final int STAR      = 38;  // *
-    public static final int SLASH     = 39;  // /
-    public static final int PERCENT   = 40;  // %
-    public static final int LPAREN    = 41;  // (
-    public static final int RPAREN    = 42;  // )
-    public static final int LBRACKET  = 43;  // [
-    public static final int RBRACKET  = 44;  // ]
-    public static final int DOT       = 45;  // .
-    public static final int DOTDOT    = 46;  // ..
-    public static final int COMMA     = 47;  // ,
-    public static final int SEMICOLON = 48;  // ;
+    public static final int RETIMM    = 29;  // =>
+    public static final int ASSIGN    = 30;  // :=
+    public static final int COLON     = 31;  // :
+    public static final int EQ        = 32;  // =
+    public static final int NEQ       = 33;  // /=
+    public static final int LT        = 34;  // <
+    public static final int LE        = 35;  // <=
+    public static final int GT        = 36;  // >
+    public static final int GE        = 37;  // >=
+    public static final int PLUS      = 38;  // +
+    public static final int MINUS     = 39;  // -
+    public static final int STAR      = 40;  // *
+    public static final int SLASH     = 41;  // /
+    public static final int PERCENT   = 42;  // %
+    public static final int LPAREN    = 43;  // (
+    public static final int RPAREN    = 44;  // )
+    public static final int LBRACKET  = 45;  // [
+    public static final int RBRACKET  = 46;  // ]
+    public static final int DOT       = 47;  // .
+    public static final int DOTDOT    = 48;  // ..
+    public static final int COMMA     = 49;  // ,
+    public static final int SEMICOLON = 50;  // ;
+    public static final int NEWLINE   = 51;  // \n 
 
     // Logical operators
-    public static final int AND = 49;
-    public static final int OR  = 50;
-    public static final int XOR = 51;
-    public static final int NOT = 52;
+    public static final int AND = 52;
+    public static final int OR  = 53;
+    public static final int XOR = 54;
+    public static final int NOT = 55;
 
-    // Newline
-    public static final int NEWLINE = 53;
-
-    // Error
-    public static final int UNKNOWN = 54;
+    // Unknown token
+    public static final int UNKNOWN = 56;
 
     /** Human-readable name for error messages and debugging. */
     public static String name(int tokenType) {
@@ -105,6 +104,7 @@ public final class TokenConstants {
             case TRUE -> "true";
             case FALSE -> "false";
             case NULL -> "null";
+            case NEW -> "new";
             case IDENTIFIER -> "identifier";
             case INTEGER_LITERAL -> "integer literal";
             case REAL_LITERAL -> "real literal";
@@ -129,11 +129,11 @@ public final class TokenConstants {
             case DOTDOT -> "..";
             case COMMA -> ",";
             case SEMICOLON -> ";";
+            case NEWLINE -> "newline";
             case AND -> "and";
             case OR -> "or";
             case XOR -> "xor";
             case NOT -> "not";
-            case NEWLINE -> "newline";
             default -> "unknown(" + tokenType + ")";
         };
     }
