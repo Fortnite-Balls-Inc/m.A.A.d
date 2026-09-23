@@ -15,6 +15,9 @@ public final class Lexer {
 
     private final PushbackReader reader;
 
+    // To restore the column when the newline was read
+    private int previousLineColumn = 1;
+
     // Current position
     private int line = 1;
     private int column = 1;
@@ -51,6 +54,7 @@ public final class Lexer {
         KEYWORDS.put("boolean", TokenConstants.BOOLEAN);
         KEYWORDS.put("true",    TokenConstants.TRUE);
         KEYWORDS.put("false",   TokenConstants.FALSE);
+        KEYWORDS.put("new",     TokenConstants.NEW);
         KEYWORDS.put("null",    TokenConstants.NULL);
         KEYWORDS.put("and",     TokenConstants.AND);
         KEYWORDS.put("or",      TokenConstants.OR);
@@ -128,18 +132,18 @@ public final class Lexer {
                 unread(next);
                 return makeToken(TokenConstants.EQ);
 
-            case '+': return makeToken(TokenConstants.PLUS);
-            case '-': return makeToken(TokenConstants.MINUS);
-            case '*': return makeToken(TokenConstants.STAR);
-            case '%': return makeToken(TokenConstants.PERCENT);
-            case '(': return makeToken(TokenConstants.LPAREN);
-            case ')': return makeToken(TokenConstants.RPAREN);
-            case '[': return makeToken(TokenConstants.LBRACKET);
-            case ']': return makeToken(TokenConstants.RBRACKET);
-            case ',': return makeToken(TokenConstants.COMMA);
-            case ';': return makeToken(TokenConstants.SEMICOLON);
+            case '+' : return makeToken(TokenConstants.PLUS);
+            case '-' : return makeToken(TokenConstants.MINUS);
+            case '*' : return makeToken(TokenConstants.STAR);
+            case '%' : return makeToken(TokenConstants.PERCENT);
+            case '(' : return makeToken(TokenConstants.LPAREN);
+            case ')' : return makeToken(TokenConstants.RPAREN);
+            case '[' : return makeToken(TokenConstants.LBRACKET);
+            case ']' : return makeToken(TokenConstants.RBRACKET);
+            case ',' : return makeToken(TokenConstants.COMMA);
+            case ';' : return makeToken(TokenConstants.SEMICOLON);
             case '\n': return makeToken(TokenConstants.NEWLINE);
-            default : return makeToken(TokenConstants.UNKNOWN, String.valueOf(ch));
+            default  : return makeToken(TokenConstants.UNKNOWN, String.valueOf(ch));
         }
     }
 
@@ -224,6 +228,19 @@ public final class Lexer {
                         ch = read();
                         if (ch == EOF || ch == '\n') break;
                     }
+
+                    /*
+                    Example:
+                        var x integer // some comment
+                        var y integer
+
+                    If the newline is not read back,
+                    the variable declarations are not separated
+                    */
+                    if (ch == '\n') {
+                        unread(ch);
+                    }
+
                     continue;
                 }
                 // it's division, push back both characters
@@ -242,6 +259,7 @@ public final class Lexer {
         if (ch == -1) return EOF;
 
         if (ch == '\n') {
+            previousLineColumn = column;
             line++;
             column = 1;
         } else {
@@ -256,7 +274,8 @@ public final class Lexer {
         reader.unread(ch);
 
         if (ch == '\n') {
-            line--; // after unread() anyway there will be read() that will set proper column
+            line--;
+            column = previousLineColumn;
         } else {
             column--;
         }
