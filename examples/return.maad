@@ -2,7 +2,7 @@
 routine square(x : real) : integer => x*x
 
 // Function not returning a value
-routine bar()
+routine bar() is
     return
 end
 

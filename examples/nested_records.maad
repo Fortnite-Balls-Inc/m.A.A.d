@@ -1,25 +1,22 @@
 type Address is record
-    var street : integer
-    var city : integer
+    var street  : integer
+    var city    : integer
 end
 
 type Person is record
-    var name : integer
-    var age : integer
+    var name    : integer
+    var age     : integer
     var address : Address
 end
 
 routine Main() is
-    var p : Person
-    p.name := 1
+    var p : Person  // null
+    p.name := 1     // runtime error
     p.age := 30
-    // will cause runtime error
-    // p.address.street := 123
-    p.address := record
-        var street : 1
-        var city : 2
-    end
+
+    p.address := new Address(street is 1, city is 2)
  
-    print p.name, p.age
+    print   p.name,
+            p.age
     print p.address.street, p.address.city
 end
