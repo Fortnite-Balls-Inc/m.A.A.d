@@ -1,8 +1,18 @@
 routine main() : integer is
-    var a array[2] array[] integer
-    
-    a[1] = array[100] integer
-    a[2] = array[200] integer 
+    var a: array[2] array[] integer
+
+    // Declare and initialize array x
+    var x: array[100] integer
+    for i in 1..100 loop
+        x[i] := i
+    end
+
+    // Declare array y (filled with default values - two hundred zeros)
+    var y: array[200] integer
+
+    // Assign the values of arrays to the first two elements of a
+    a[1] := x
+    a[2] := y
 
     return 0
 end

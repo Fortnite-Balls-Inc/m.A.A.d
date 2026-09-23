@@ -5,12 +5,12 @@ type Coordinate is record
     var x : integer; var y : integer
 end
 
-var p1 : Point is record
-    var x : integer is 10; var y : integer is 20
-end
-var p2 : Coordinate is record
-    var x : integer is 30; var y : integer is 40
-end
+var p1 : Point is new Point(
+    x is 10, y is 20
+)
+var p2 : Coordinate is new Point(
+    x is 30, y is 40
+)
 
 routine PrintPoint(p : Point) is
     print p.x, p.y

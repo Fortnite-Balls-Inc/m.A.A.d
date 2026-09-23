@@ -1,6 +1,6 @@
 var n is 10         // type: integer
 
-routine main()
+routine main() is
     print n         // 10
 
     var n : real is 3.14
