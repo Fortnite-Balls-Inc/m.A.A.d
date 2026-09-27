@@ -2,8 +2,6 @@ package com.compiler.ast;
 
 import java.util.List;
 
-import com.compiler.ast.declaration.Declaration;
-
 public record Block(
     List<BlockItem> items,
     SourcePosition position
