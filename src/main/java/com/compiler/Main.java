@@ -16,16 +16,18 @@ public class Main {
             Lexer lexer = new Lexer(reader);
             BisonLexer bisonLexer = new BisonLexer(lexer);
             Parser parser = new Parser(bisonLexer);
+            parser.setErrorVerbose(true);
 
             boolean success = parser.parse();
+            if (!success) {
+                System.out.println("Parsing failed!");
+                System.out.printf("Number of errors: %d\n", parser.getNumberOfErrors());
+                System.exit(1);
+            }
 
-            System.out.println(
-                    success
-                            ? "Parsing successful"
-                            : "Parsing failed"
-            );
-
-        } catch (IOException e) {
+            // Print the AST
+            parser.getProgram().prettyPrint();
+        } catch (IOException e) {   // file not found, no access, ...
             e.printStackTrace();
         }
     }
