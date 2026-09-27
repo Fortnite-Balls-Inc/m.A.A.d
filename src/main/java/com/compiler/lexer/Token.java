@@ -49,6 +49,10 @@ public final class Token {
         return (value instanceof Boolean b) ? b : null;
     }
 
+    public String getStringValue() {
+        return (value instanceof String s) ? s : null;
+    }
+
     public boolean isEof() {
         return type == TokenConstants.EOF;
     }

@@ -96,7 +96,7 @@ public final class BisonLexer implements Parser.Lexer {
 
     @Override
     public Object getLVal() {
-        return currentToken == null ? null : currentToken.getValue();
+        return currentToken;
     }
 
     @Override
