@@ -8,3 +8,13 @@ The compiler is implemented in **Java**, with the parser generated using **Bison
 
 - [Semen Nadutkin](mailto:s.nadutkin@innopolis.university)
 - [Igor Baranov](mailto:ig.baranov@innopolis.university)
+
+## Parser
+
+Generate Java parser from Bison source:
+
+```
+bison -Wall                                             \
+      -o src/main/java/com/compiler/parser/Parser.java  \
+      src/main/bison/parser.y
+```
