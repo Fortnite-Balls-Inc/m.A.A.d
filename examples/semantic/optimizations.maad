@@ -1,0 +1,23 @@
+// Run with --show-before to inspect all five optimization categories.
+routine main(): integer is
+    var unused is 10 * 10
+    var x is 7
+    print 2 + 3 * 4
+
+    if 3 < 5 then
+        var x is 2
+        print x
+    else
+        print 99
+    end
+    print x // Still the outer 7 after optimization.
+
+    while false loop
+        print 88
+    end
+    for i in 5..2 reverse loop
+        print i
+    end
+    return 0
+    print 77 // Checked first, then removed as unreachable.
+end

@@ -1,0 +1,26 @@
+type Point is record
+    var x: real
+    var y: real
+end
+type Position is Point
+
+// Forward declaration supports mutual recursion / later definitions.
+routine sum(a: array[] integer): integer
+
+routine main(n: integer): integer is
+    var a: array[n] integer
+    for i in 1..n loop
+        a[i] := i
+    end
+    var p: Position is new Point(x is 1, y is 2.5)
+    print p.x, p.y, a.length
+    return sum(a)
+end
+
+routine sum(a: array[] integer): integer is
+    var total is 0
+    for value in a loop
+        total := total + value
+    end
+    return total
+end
