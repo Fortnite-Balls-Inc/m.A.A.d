@@ -121,7 +121,7 @@ public final class SemanticAnalyzer {
                 Collections.newSetFromMap(new IdentityHashMap<>());
 
         private AnalysisResult analyzeProgram(Program program) {
-            // Create the global scope and analyze top-level declarations in source order.
+            // Create the global scope and analyze top-level declarations in source order
             Scope globalScope = new Scope(null);
             for (Declaration declaration : program.declarations()) {
                 switch (declaration) {
@@ -572,6 +572,7 @@ public final class SemanticAnalyzer {
             return symbol.type;
         }
 
+        /** Analyzes both sides of the expression and reports LHS/RHS/operator incompatibility */
         private SemanticType analyzeBinaryExpression(BinaryExpression binary, Scope scope) {
             SemanticType leftType = analyzeExpression(binary.left(), scope);
             SemanticType rightType = analyzeExpression(binary.right(), scope);
@@ -584,7 +585,6 @@ public final class SemanticAnalyzer {
                 }
                 case EQUAL, NOT_EQUAL -> {
                     if (leftType != ERROR && rightType != ERROR
-                            && !(isNumericType(leftType) && isNumericType(rightType))
                             && !isAssignmentCompatible(leftType, rightType)
                             && !isAssignmentCompatible(rightType, leftType)) {
                         reportError(E_TYPE, binary, "Cannot compare " + leftType + " and " + rightType);
@@ -677,10 +677,8 @@ public final class SemanticAnalyzer {
             if (target instanceof SemanticType.Array targetArray && source instanceof SemanticType.Array sourceArray) {
                 // Reference assignment cannot convert elements stored in the aliased array.
                 return haveSameType(targetArray.element(), sourceArray.element())
-                        && (targetArray.identity() == null || sourceArray.identity() == null
-                            || targetArray.identity() == sourceArray.identity())
-                        && (targetArray.size() == null || sourceArray.size() == null
-                            || targetArray.size().equals(sourceArray.size()));
+                        && targetArray.identity() == sourceArray.identity()
+                        && (targetArray.size() == null || targetArray.size().equals(sourceArray.size()));
             }
             return false;
         }
