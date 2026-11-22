@@ -1,0 +1,27 @@
+type Point is record
+    var x: integer
+end
+type Coordinate is record
+    var x: integer
+end
+
+routine takesBoolean(value: boolean) is
+    print value
+end
+
+routine main(): integer is
+    print missing
+    var a: array[3] integer
+    print a[0], a[4]
+    a.length := 4
+    var p: Point is new Coordinate()
+    takesBoolean(2)
+    takesBoolean()
+    for i in 1..3 loop
+        i := 9
+    end
+    if false then
+        print hidden_error // Still checked before dead code elimination.
+    end
+    return // A function must return a value.
+end

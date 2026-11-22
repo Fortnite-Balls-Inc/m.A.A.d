@@ -9,9 +9,19 @@ The compiler is implemented in **Java**, with the parser generated using **Bison
 - [Semen Nadutkin](mailto:s.nadutkin@innopolis.university)
 - [Igor Baranov](mailto:ig.baranov@innopolis.university)
 
+## How to Run
+**Prerequisites:** JDK 25, Maven 3.9.12+
+
+```bash
+// Replace <your_file> with the path to your MAAD file! :D
+mvn -q compile exec:java -Dexec.args="<your_file>.maad"
+```
+
 ## Parser
 
-Generate Java parser from Bison source:
+**Prerequisites:** Bison 3.8.2+
+
+### Generation with Bison
 
 ```
 bison -Wall                                             \
