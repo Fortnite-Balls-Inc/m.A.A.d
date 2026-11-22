@@ -8,10 +8,17 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+/** Parses a source file and writes the selected compiler output. */
 public class Main {
+    /** Runs the compiler with a source path and an optional output path or --ast. */
     public static void main(String[] args) {
+        if (args.length < 1 || args.length > 2) {
+            System.err.println("Usage: maad <source.maad> [output.j | --ast]");
+            System.exit(1);
+        }
+
         try (BufferedReader reader =
-                     new BufferedReader(new FileReader(args[0]))) {
+                new BufferedReader(new FileReader(args[0]))) {
 
             Lexer lexer = new Lexer(reader);
             BisonLexer bisonLexer = new BisonLexer(lexer);
@@ -25,10 +32,10 @@ public class Main {
                 System.exit(1);
             }
 
-            // Print the AST
-            parser.getProgram().prettyPrint();
-        } catch (IOException e) {   // file not found, no access, ...
-            e.printStackTrace();
+            CompilerOutput.write(parser.getProgram(), args);
+        } catch (IOException | IllegalArgumentException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
     }
 }

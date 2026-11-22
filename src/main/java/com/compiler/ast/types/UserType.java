@@ -1,4 +1,4 @@
 package com.compiler.ast.types;
 
-public interface UserType extends TypeNode {
+public sealed interface UserType extends TypeNode permits ArrayType, RecordType {
 }
