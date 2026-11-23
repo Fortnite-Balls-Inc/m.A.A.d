@@ -1,63 +1,66 @@
 package com.compiler;
 
-import com.compiler.ast.Program;
-import com.compiler.codegen.JasminGenerator;
-import com.compiler.optimization.Optimizer;
-import com.compiler.semantic.AnalysisResult;
-import com.compiler.semantic.SemanticAnalyzer;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-/** Runs semantic analysis and optimization before writing compiler output. */
+import com.compiler.ast.Program;
+import com.compiler.codegen.JasminGenerator;
+import com.compiler.optimization.Optimizer;
+import com.compiler.semantic.AnalysisResult;
+import com.compiler.semantic.Diagnostic;
+import com.compiler.semantic.SemanticAnalyzer;
+
+/** Compiles a parsed program and writes its Jasmin classes to disk. */
 final class CompilerOutput {
     private CompilerOutput() {
     }
 
-    /** Writes all generated classes beside the requested output file. */
-    static void write(Program program, String[] arguments) throws IOException {
-        if (arguments.length == 2 && arguments[1].equals("--ast")) {
-            program.prettyPrint();
-            return;
+    static void write(Program program, Path source, Path output)
+            throws IOException {
+        String className = outputClassName(output);
+        AnalysisResult analysis = analyzeAndOptimize(program, source);
+        Map<String, String> classes =
+                new JasminGenerator().generateClasses(analysis, className);
+        for (Map.Entry<String, String> entry : classes.entrySet()) {
+            String generatedName = entry.getKey();
+            Path file = generatedName.equals(className)
+                    ? output : output.resolveSibling(generatedName + ".j");
+            Files.writeString(file, entry.getValue());
         }
+    }
 
-        Path source = Path.of(arguments[0]);
-        String sourceName = source.getFileName().toString().replaceFirst("\\.[^.]+$", "");
-        Path output = arguments.length == 2
-                ? Path.of(arguments[1]) : source.resolveSibling(sourceName + ".j");
-        String className = output.getFileName().toString().replaceFirst("\\.j$", "");
-
+    private static String outputClassName(Path output) {
+        String fileName = output.getFileName().toString();
+        String className = fileName.replaceFirst("\\.j$", "");
         if (!className.matches("[A-Za-z_][A-Za-z_0-9]*")) {
             throw new IllegalArgumentException(
-                    "Output class name must be a valid identifier: " + className);
+                    "Output class name must be a valid identifier: "
+                            + className);
         }
+        return className;
+    }
 
+    private static AnalysisResult analyzeAndOptimize(Program program,
+            Path source) {
         SemanticAnalyzer analyzer = new SemanticAnalyzer();
-        AnalysisResult analysis = analyzer.analyze(program);
-        if (!analysis.isValid()) {
-            for (var diagnostic : analysis.diagnostics()) {
+        AnalysisResult original = analyzer.analyze(program);
+        if (!original.isValid()) {
+            for (Diagnostic diagnostic : original.diagnostics()) {
                 System.err.println(source + ":" + diagnostic);
             }
             throw new IllegalArgumentException("Semantic analysis failed: "
-                    + analysis.diagnostics().size() + " error(s)");
+                    + original.diagnostics().size() + " error(s)");
         }
 
-        var optimized = new Optimizer().optimize(analysis);
-        // Optimizer rewrites AST nodes; identity maps must describe the new tree.
-        AnalysisResult optimizedAnalysis = analyzer.analyze(optimized.program());
-        if (!optimizedAnalysis.isValid()) {
+        Program optimized = new Optimizer().optimize(original).program();
+        // Type and binding maps use node identity. Rebuild them for this AST.
+        AnalysisResult result = analyzer.analyze(optimized);
+        if (!result.isValid()) {
             throw new IllegalStateException("Optimizer produced invalid AST: "
-                    + optimizedAnalysis.diagnostics());
+                    + result.diagnostics());
         }
-
-        Map<String, String> classes = new JasminGenerator()
-                .generateClasses(optimizedAnalysis, className);
-        for (Map.Entry<String, String> generatedClass : classes.entrySet()) {
-            Path file = generatedClass.getKey().equals(className)
-                    ? output : output.resolveSibling(generatedClass.getKey() + ".j");
-            Files.writeString(file, generatedClass.getValue());
-        }
+        return result;
     }
 }

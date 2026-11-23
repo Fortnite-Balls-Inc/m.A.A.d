@@ -1,5 +1,6 @@
 package com.compiler.ast;
 
+/** A syntax tree node and its location in the source program. */
 public interface Node {
     SourcePosition position();
 
@@ -7,5 +8,6 @@ public interface Node {
         prettyPrint(0);
     }
 
-    void prettyPrint(int h);
+    /** Writes this subtree with two spaces of indentation per level. */
+    void prettyPrint(int depth);
 }

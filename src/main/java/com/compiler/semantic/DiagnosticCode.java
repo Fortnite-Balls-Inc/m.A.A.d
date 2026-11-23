@@ -1,33 +1,33 @@
 package com.compiler.semantic;
 
-/** Stable diagnostic identifiers used by the analyzer and command-line output. */
+/** Stable diagnostic identifiers used in command-line output. */
 public enum DiagnosticCode {
     // Declarations and name resolution.
-    E_UNDECLARED,   // name is not declared/accessible in the current scope
-    E_DUPLICATE,    // name is redeclared in the same scope
-    E_KIND,         // wrong name usage (e.g. variable as a procedure)
-    E_FORWARD,      // no definition for a routine forward declaration provided
-    E_SIGNATURE,    // routine definition and forward declaration signatures do not match
+    E_UNDECLARED,       // Name unavailable at its use site.
+    E_DUPLICATE,        // Name redeclared in the same scope.
+    E_KIND,             // Name used as the wrong kind of declaration.
+    E_FORWARD,          // Routine declared without a definition.
+    E_SIGNATURE,        // Definition differs from the forward declaration.
 
-    // Types, values, and routine calls.
-    E_TYPE,             // incompatible types when assigning, passing, returning, ... an argument
-    E_INFER,            // could not infer the variable type from the RHS expression
-    E_CONVERSION,       // conversion between the types is possible in general but not in the specific case 
-    E_LITERAL,          // invalid literal value (e.g. overflowing real literal)
-    E_ARITY,            // invalid number of arguments provided in the function call
-    E_VOID,             // procedure without the return value appears on the RHS of an assignment/initialization
-    E_RETURN,           // empty return on a procedure with a declared result and vice versa
-    E_MISSING_RETURN,   // routine with the declared result may not return a value
+    // Types, values and routine calls.
+    E_TYPE,             // Incompatible types.
+    E_INFER,            // Cannot infer the variable's type.
+    E_CONVERSION,       // Constant value falls outside the conversion range.
+    E_LITERAL,          // Invalid literal value.
+    E_ARITY,            // Wrong number of arguments.
+    E_VOID,             // Procedure call used as a value.
+    E_RETURN,           // Return statement disagrees with the declared result.
+    E_MISSING_RETURN,   // Function can reach its end without returning.
 
-    // Records, arrays, and assignment targets.
-    E_CONSTRUCTOR,      // new is used on a non-record type
-    E_FIELD,            // a non-existent field used
-    E_DUPLICATE_FIELD,  // a field is used twice in constructor
-    E_ARRAY_SIZE,       // negative array size
-    E_INDEX,            // attempting to index a non-array variable
-    E_BOUNDS,           // constant index is out of array bounds
-    E_ITERATION,        // for <variable> in <expression>: <expression> is not a range or array
-    E_READONLY,         // assigning a value to a read-only field/variable (e.g. array.length)
-    E_LVALUE,           // invalid value used on the LHS of :=
-    E_DIV_ZERO          // zero on the RHS of / or %
+    // Records, arrays and assignment targets.
+    E_CONSTRUCTOR,      // Constructor names a type other than a record.
+    E_FIELD,            // Unknown field.
+    E_DUPLICATE_FIELD,  // Field initialized twice.
+    E_ARRAY_SIZE,       // Negative array size.
+    E_INDEX,            // Indexed value has a type other than an array.
+    E_BOUNDS,           // Constant index outside array bounds.
+    E_ITERATION,        // Invalid source in a for loop.
+    E_READONLY,         // Assignment to a read-only binding or field.
+    E_LVALUE,           // Invalid assignment target.
+    E_DIV_ZERO          // Constant zero divisor.
 }

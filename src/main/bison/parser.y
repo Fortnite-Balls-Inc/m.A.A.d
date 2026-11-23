@@ -5,76 +5,84 @@
 %define api.parser.public
 
 %code imports {
-    import com.compiler.lexer.Token;
-    import com.compiler.ast.SourcePosition;
-    import com.compiler.ast.expression.Expression;
-    import com.compiler.ast.expression.BooleanLiteral;
-    import com.compiler.ast.expression.IntegerLiteral;
-    import com.compiler.ast.expression.RealLiteral;
-    import com.compiler.ast.expression.NullLiteral;
-    import com.compiler.ast.expression.Identifier;
-    import com.compiler.ast.expression.BinaryExpression;
-    import com.compiler.ast.expression.BinaryOperator;
-    import com.compiler.ast.expression.UnaryExpression;
-    import com.compiler.ast.expression.UnaryOperator;
-    import com.compiler.ast.expression.FieldAccess;
-    import com.compiler.ast.expression.IndexAccess;
-    import com.compiler.ast.expression.RoutineCall;
-    import com.compiler.ast.expression.RecordConstructor;
-    import com.compiler.ast.expression.MemberInitialization;
-    import com.compiler.parser.support.ExpressionList;
-    import com.compiler.parser.support.MemberInitializationList;
-    import com.compiler.ast.types.ArrayType;
-    import com.compiler.ast.types.NamedType;
-    import com.compiler.ast.types.PrimitiveKind;
-    import com.compiler.ast.types.PrimitiveType;
-    import com.compiler.ast.types.RecordType;
-    import com.compiler.ast.types.TypeNode;
-    import com.compiler.ast.types.UserType;
-    import com.compiler.ast.declaration.SimpleDeclaration;
-    import com.compiler.ast.declaration.VariableDeclaration;
-    import com.compiler.ast.declaration.TypeDeclaration;
-    import com.compiler.parser.support.VariableDeclarationList;
-    import com.compiler.ast.Program;
-    import com.compiler.ast.Block;
-    import com.compiler.ast.BlockItem;
-    import com.compiler.ast.declaration.Declaration;
-    import com.compiler.ast.declaration.Parameter;
-    import com.compiler.ast.declaration.RoutineDeclaration;
-    import com.compiler.ast.declaration.RoutineBody;
-    import com.compiler.ast.declaration.BlockRoutineBody;
-    import com.compiler.ast.declaration.ExpressionRoutineBody;
-    import com.compiler.ast.statement.Statement;
-    import com.compiler.ast.statement.Assignment;
-    import com.compiler.ast.statement.RoutineCallStatement;
-    import com.compiler.ast.statement.WhileLoop;
-    import com.compiler.ast.statement.ForLoop;
-    import com.compiler.ast.statement.IfStatement;
-    import com.compiler.ast.statement.PrintStatement;
-    import com.compiler.ast.statement.ReturnStatement;
-    import com.compiler.ast.statement.IterationSource;
-    import com.compiler.ast.statement.ExpressionSource;
-    import com.compiler.ast.statement.RangeSource;
-    import com.compiler.parser.support.DeclarationList;
-    import com.compiler.parser.support.BlockItemList;
-    import com.compiler.parser.support.ParameterList;
-    import com.compiler.parser.support.RoutineHeader;
-    import java.util.Optional;
-    import java.util.List;
+import java.util.List;
+import java.util.Optional;
+
+import com.compiler.ast.Block;
+import com.compiler.ast.BlockItem;
+import com.compiler.ast.Program;
+import com.compiler.ast.SourcePosition;
+import com.compiler.ast.declaration.BlockRoutineBody;
+import com.compiler.ast.declaration.Declaration;
+import com.compiler.ast.declaration.ExpressionRoutineBody;
+import com.compiler.ast.declaration.Parameter;
+import com.compiler.ast.declaration.RoutineBody;
+import com.compiler.ast.declaration.RoutineDeclaration;
+import com.compiler.ast.declaration.SimpleDeclaration;
+import com.compiler.ast.declaration.TypeDeclaration;
+import com.compiler.ast.declaration.VariableDeclaration;
+import com.compiler.ast.expression.BinaryExpression;
+import com.compiler.ast.expression.BinaryOperator;
+import com.compiler.ast.expression.BooleanLiteral;
+import com.compiler.ast.expression.Expression;
+import com.compiler.ast.expression.FieldAccess;
+import com.compiler.ast.expression.Identifier;
+import com.compiler.ast.expression.IndexAccess;
+import com.compiler.ast.expression.IntegerLiteral;
+import com.compiler.ast.expression.MemberInitialization;
+import com.compiler.ast.expression.NullLiteral;
+import com.compiler.ast.expression.RealLiteral;
+import com.compiler.ast.expression.RecordConstructor;
+import com.compiler.ast.expression.RoutineCall;
+import com.compiler.ast.expression.UnaryExpression;
+import com.compiler.ast.expression.UnaryOperator;
+import com.compiler.ast.statement.Assignment;
+import com.compiler.ast.statement.ExpressionSource;
+import com.compiler.ast.statement.ForLoop;
+import com.compiler.ast.statement.IfStatement;
+import com.compiler.ast.statement.IterationSource;
+import com.compiler.ast.statement.PrintStatement;
+import com.compiler.ast.statement.RangeSource;
+import com.compiler.ast.statement.ReturnStatement;
+import com.compiler.ast.statement.RoutineCallStatement;
+import com.compiler.ast.statement.Statement;
+import com.compiler.ast.statement.WhileLoop;
+import com.compiler.ast.types.ArrayType;
+import com.compiler.ast.types.NamedType;
+import com.compiler.ast.types.PrimitiveKind;
+import com.compiler.ast.types.PrimitiveType;
+import com.compiler.ast.types.RecordType;
+import com.compiler.ast.types.TypeNode;
+import com.compiler.ast.types.UserType;
+import com.compiler.lexer.Token;
+import com.compiler.parser.support.BlockItemList;
+import com.compiler.parser.support.DeclarationList;
+import com.compiler.parser.support.ExpressionList;
+import com.compiler.parser.support.MemberInitializationList;
+import com.compiler.parser.support.ParameterList;
+import com.compiler.parser.support.RoutineHeader;
+import com.compiler.parser.support.VariableDeclarationList;
 }
 
 %code {
     private Program program;
 
     /**
-     * Returns the AST after parse() has returned true.
+     * Returns the AST after a successful parse.
+     *
      * @throws IllegalStateException if no program has been constructed
      */
     public Program getProgram() {
         if (program == null) {
-            throw new IllegalStateException("No program AST is available; parse() must succeed first.");
+            throw new IllegalStateException(
+                    "No program AST is available; parse() must succeed first.");
         }
         return program;
+    }
+
+    private static BinaryExpression binary(BinaryOperator operator,
+            Expression left, Expression right) {
+        return new BinaryExpression(operator, left, right, left.position());
     }
 
     private static SourcePosition position(Token token) {
@@ -155,7 +163,8 @@
 %type <RecordConstructor> constructor_expression
 %type <MemberInitialization> member_initialization
 %type <ExpressionList> optional_arguments argument_list argument_list_tail
-%type <MemberInitializationList> optional_members member_initialization_list member_initialization_list_tail
+%type <MemberInitializationList> optional_members member_initialization_list
+%type <MemberInitializationList> member_initialization_list_tail
 %type <BooleanLiteral> boolean_literal
 %type <RealLiteral> real_literal
 %type <IntegerLiteral> integer_literal
@@ -177,51 +186,37 @@
 
 %%
 
+/* Program structure */
 
-
-/* =======================
-   Program structure
-   ======================= */
-
-
-
-/* 
- 1. Program may be empty or consist only of separators
- 2. Otherwise, a program is a sequence of zero or more separators
- and a declaration sequence
-*/
 program
     : optional_separators
-      { program = new Program(List.of(), new SourcePosition(1, 1)); $$ = program; }
+      {
+          program = new Program(List.of(), new SourcePosition(1, 1));
+          $$ = program;
+      }
     | optional_separators declaration_sequence
-      { program = new Program($2.values(), new SourcePosition(1, 1)); $$ = program; }
+      {
+          program = new Program($2.values(), new SourcePosition(1, 1));
+          $$ = program;
+      }
     ;
 
-/*
- 1. Declaration sequence may be a top-level declaration (TLD)
- a sequence of zero or more separators
- 2. Otherwise, TLD and a new declaration sequence split
- by a sequence of separators
-*/
+/* Right-recursive lists prepend each item to keep source order. */
 declaration_sequence
     : top_level_declaration optional_separators
       {
-        DeclarationList declarations = new DeclarationList(); // the last TLD
-        declarations.addFirst($1);
-        $$ = declarations;
+          DeclarationList declarations = new DeclarationList();
+          declarations.addFirst($1);
+          $$ = declarations;
       }
     | top_level_declaration separators declaration_sequence
-      { $3.addFirst($1); $$ = $3; } // fresh TLD -> push on top
+      {
+          $3.addFirst($1);
+          $$ = $3;
+      }
     ;
 
-/*
- 1. TLD may be a simple declaration
- 2. Otherwise, a routine declaration
-
- Note: routine_declaration cannot be included in simple_declaration
- since the body of a routine consists of simple declarations
- and nested routines are not allowed
-*/
+/* Routines can only be declared at the top level. */
 top_level_declaration
     : simple_declaration
       { $$ = $1; }
@@ -229,13 +224,7 @@ top_level_declaration
       { $$ = $1; }
     ;
 
-
-
-/* =======================
-   Declarations
-   ======================= */
-
-
+/* Declarations */
 
 simple_declaration
     : variable_declaration
@@ -244,74 +233,53 @@ simple_declaration
       { $$ = $1; }
     ;
 
-/*
- In a variable declaration, the type is either inferred from the RHS expression
- or stated explicitly with the optional assignment of the RHS expression
-*/
 variable_declaration
-    : VAR IDENTIFIER IS expression
+    : VAR IDENTIFIER[name] IS expression[value]
       {
-        $$ = new VariableDeclaration(
-            $2.getStringValue(), Optional.empty(), Optional.of($4), position($1)
-        );
+          $$ = new VariableDeclaration($name.getStringValue(),
+                  Optional.empty(), Optional.of($value), position($VAR));
       }
-    | VAR IDENTIFIER COLON type optional_initializer
+    | VAR IDENTIFIER[name] COLON type optional_initializer[value]
       {
-        $$ = new VariableDeclaration(
-            $2.getStringValue(), Optional.of($4), Optional.ofNullable($5), position($1)
-        );
+          $$ = new VariableDeclaration($name.getStringValue(),
+                  Optional.of($type), Optional.ofNullable($value),
+                  position($VAR));
       }
     ;
-
 
 type_declaration
     : TYPE IDENTIFIER IS type
       { $$ = new TypeDeclaration($2.getStringValue(), $4, position($1)); }
     ;
 
-
-
-/* =======================
-   Expressions
-   ======================= */
-
-
-
-/*
- Priority:
-
- 1. OR < XOR < AND
- 2. AND < comparison operator < +/-
- 3. +/- < mul/div/mod
- 4. mul/div/mod < +/-/NOT expr
- 5. +/-/NOT (expr) < literal/call/(expr)/...
-*/
+/* Expressions, from lowest to highest precedence: OR, XOR, AND, comparison,
+   addition, multiplication, unary operators, primary expressions. */
 expression
     : xor_expression
       { $$ = $1; }
     | expression OR xor_expression
-      { $$ = new BinaryExpression(BinaryOperator.OR, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.OR, $1, $3); }
     ;
 
 xor_expression
     : and_expression
       { $$ = $1; }
     | xor_expression XOR and_expression
-      { $$ = new BinaryExpression(BinaryOperator.XOR, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.XOR, $1, $3); }
     ;
 
 and_expression
     : relation
       { $$ = $1; }
     | and_expression AND relation
-      { $$ = new BinaryExpression(BinaryOperator.AND, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.AND, $1, $3); }
     ;
 
 relation
     : simple
       { $$ = $1; }
     | simple comparison_operator simple
-      { $$ = new BinaryExpression($2, $1, $3, $1.position()); }
+      { $$ = binary($2, $1, $3); }
     ;
 
 comparison_operator
@@ -327,20 +295,20 @@ simple
     : factor
       { $$ = $1; }
     | simple PLUS factor
-      { $$ = new BinaryExpression(BinaryOperator.ADD, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.ADD, $1, $3); }
     | simple MINUS factor
-      { $$ = new BinaryExpression(BinaryOperator.SUBTRACT, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.SUBTRACT, $1, $3); }
     ;
 
 factor
     : summand
       { $$ = $1; }
     | factor STAR summand
-      { $$ = new BinaryExpression(BinaryOperator.MULTIPLY, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.MULTIPLY, $1, $3); }
     | factor SLASH summand
-      { $$ = new BinaryExpression(BinaryOperator.DIVIDE, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.DIVIDE, $1, $3); }
     | factor PERCENT summand
-      { $$ = new BinaryExpression(BinaryOperator.REMAINDER, $1, $3, $1.position()); }
+      { $$ = binary(BinaryOperator.REMAINDER, $1, $3); }
     ;
 
 summand
@@ -400,8 +368,11 @@ modifiable_primary
     ;
 
 routine_call
-    : IDENTIFIER LPAREN optional_newlines optional_arguments RPAREN
-      { $$ = new RoutineCall($1.getStringValue(), $4.values(), position($1)); }
+    : IDENTIFIER[name] LPAREN optional_newlines optional_arguments RPAREN
+      {
+          $$ = new RoutineCall($name.getStringValue(),
+                  $optional_arguments.values(), position($name));
+      }
     ;
 
 optional_arguments
@@ -413,19 +384,28 @@ optional_arguments
 
 argument_list
     : expression argument_list_tail
-      { $2.addFirst($1); $$ = $2; }
+      {
+          $2.addFirst($1);
+          $$ = $2;
+      }
     ;
 
 argument_list_tail
     : %empty
       { $$ = new ExpressionList(); }
     | COMMA optional_newlines expression argument_list_tail
-      { $4.addFirst($3); $$ = $4; }
+      {
+          $4.addFirst($3);
+          $$ = $4;
+      }
     ;
 
 constructor_expression
-    : NEW IDENTIFIER LPAREN optional_newlines optional_members RPAREN
-      { $$ = new RecordConstructor($2.getStringValue(), $5.values(), position($1)); }
+    : NEW IDENTIFIER[name] LPAREN optional_newlines optional_members RPAREN
+      {
+          $$ = new RecordConstructor($name.getStringValue(),
+                  $optional_members.values(), position($NEW));
+      }
     ;
 
 optional_members
@@ -437,14 +417,21 @@ optional_members
 
 member_initialization_list
     : member_initialization member_initialization_list_tail
-      { $2.addFirst($1); $$ = $2; }
+      {
+          $2.addFirst($1);
+          $$ = $2;
+      }
     ;
 
 member_initialization_list_tail
     : %empty
       { $$ = new MemberInitializationList(); }
-    | COMMA optional_newlines member_initialization member_initialization_list_tail
-      { $4.addFirst($3); $$ = $4; }
+    | COMMA optional_newlines member_initialization
+      member_initialization_list_tail
+      {
+          $4.addFirst($3);
+          $$ = $4;
+      }
     ;
 
 member_initialization
@@ -454,18 +441,12 @@ member_initialization
 
 optional_initializer
     : %empty
-      { $$ = null; } // to use as Optional.ofNullable(...)
+      { $$ = null; }
     | IS expression
       { $$ = $2; }
     ;
 
-
-
-/* =======================
-   Types
-   ======================= */
-
-
+/* Types */
 
 type
     : primitive_type
@@ -514,12 +495,15 @@ record_type
 record_member_sequence
     : variable_declaration optional_separators
       {
-        VariableDeclarationList fields = new VariableDeclarationList();
-        fields.addFirst($1);
-        $$ = fields;
+          VariableDeclarationList fields = new VariableDeclarationList();
+          fields.addFirst($1);
+          $$ = fields;
       }
     | variable_declaration separators record_member_sequence
-      { $3.addFirst($1); $$ = $3; }
+      {
+          $3.addFirst($1);
+          $$ = $3;
+      }
     ;
 
 named_type
@@ -527,13 +511,7 @@ named_type
       { $$ = new NamedType($1.getStringValue(), position($1)); }
     ;
 
-
-
-/* =======================
-   Statements
-   ======================= */
-
-
+/* Statements */
 
 statement
     : assignment
@@ -558,8 +536,11 @@ assignment
     ;
 
 while_loop
-    : WHILE expression LOOP body END
-      { $$ = new WhileLoop($2, new Block($4.values(), position($3)), position($1)); }
+    : WHILE expression[condition] LOOP body END
+      {
+          Block loopBody = new Block($body.values(), position($LOOP));
+          $$ = new WhileLoop($condition, loopBody, position($WHILE));
+      }
     ;
 
 body
@@ -572,12 +553,15 @@ body
 body_sequence
     : body_item optional_separators
       {
-        BlockItemList items = new BlockItemList();
-        items.addFirst($1);
-        $$ = items;
+          BlockItemList items = new BlockItemList();
+          items.addFirst($1);
+          $$ = items;
       }
     | body_item separators body_sequence
-      { $3.addFirst($1); $$ = $3; }
+      {
+          $3.addFirst($1);
+          $$ = $3;
+      }
     ;
 
 body_item
@@ -588,11 +572,11 @@ body_item
     ;
 
 for_loop
-    : FOR IDENTIFIER IN range optional_reverse LOOP body END
+    : FOR IDENTIFIER[name] IN range optional_reverse[reverse] LOOP body END
       {
-        $$ = new ForLoop(
-            $2.getStringValue(), $4, $5, new Block($7.values(), position($6)), position($1)
-        );
+          Block loopBody = new Block($body.values(), position($LOOP));
+          $$ = new ForLoop($name.getStringValue(), $range, $reverse,
+                  loopBody, position($FOR));
       }
     ;
 
@@ -611,11 +595,11 @@ optional_reverse
     ;
 
 if_statement
-    : IF expression THEN body optional_else END
+    : IF expression[condition] THEN body optional_else END
       {
-        $$ = new IfStatement(
-            $2, new Block($4.values(), position($3)), Optional.ofNullable($5), position($1)
-        );
+          Block thenBlock = new Block($body.values(), position($THEN));
+          $$ = new IfStatement($condition, thenBlock,
+                  Optional.ofNullable($optional_else), position($IF));
       }
     ;
 
@@ -638,35 +622,21 @@ return_statement
       { $$ = new ReturnStatement(Optional.of($2), position($1)); }
     ;
 
-
-
-/* =======================
-   Routines
-   ======================= */
-
-
+/* Routines */
 
 routine_declaration
     : routine_header
-      {
-        $$ = new RoutineDeclaration(
-            $1.name(), $1.parameters(), $1.returnType(), Optional.empty(), $1.position()
-        );
-      }
+      { $$ = $1.declaration(Optional.empty()); }
     | routine_header routine_body
-      {
-        $$ = new RoutineDeclaration(
-            $1.name(), $1.parameters(), $1.returnType(), Optional.of($2), $1.position()
-        );
-      }
+      { $$ = $1.declaration(Optional.of($2)); }
     ;
 
 routine_header
-    : ROUTINE IDENTIFIER LPAREN optional_parameters RPAREN optional_return_type
+    : ROUTINE IDENTIFIER[name] LPAREN optional_parameters[params]
+      RPAREN optional_return_type[result]
       {
-        $$ = new RoutineHeader(
-            $2.getStringValue(), $4.values(), Optional.ofNullable($6), position($1)
-        );
+          $$ = new RoutineHeader($name.getStringValue(), $params.values(),
+                  Optional.ofNullable($result), position($ROUTINE));
       }
     ;
 
@@ -680,12 +650,15 @@ optional_parameters
 parameter_list
     : parameter
       {
-        ParameterList parameters = new ParameterList();
-        parameters.addLast($1);
-        $$ = parameters;
+          ParameterList parameters = new ParameterList();
+          parameters.addLast($1);
+          $$ = parameters;
       }
     | parameter_list COMMA parameter
-      { $1.addLast($3); $$ = $1; }
+      {
+          $1.addLast($3);
+          $$ = $1;
+      }
     ;
 
 parameter
@@ -702,18 +675,15 @@ optional_return_type
 
 routine_body
     : IS body END
-      { $$ = new BlockRoutineBody(new Block($2.values(), position($1)), position($1)); }
+      {
+          SourcePosition start = position($IS);
+          $$ = new BlockRoutineBody(new Block($body.values(), start), start);
+      }
     | RETIMM expression
       { $$ = new ExpressionRoutineBody($2, position($1)); }
     ;
 
-
-
-/* =======================
-   Separators & Helpers
-   ======================= */
-
-
+/* Statement separators and optional newlines */
 
 optional_separators
     : %empty

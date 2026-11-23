@@ -1,9 +1,9 @@
 package com.compiler.parser.support;
 
-import com.compiler.ast.declaration.Parameter;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import com.compiler.ast.declaration.Parameter;
 
 /** Typed accumulator for the grammar's left-recursive parameter list. */
 public final class ParameterList {

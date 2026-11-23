@@ -1,21 +1,16 @@
 package com.compiler.ast.expression;
 
+import com.compiler.ast.AstPrinter;
 import com.compiler.ast.SourcePosition;
 
-public record BinaryExpression(
-    BinaryOperator operator,
-    Expression left,
-    Expression right,
-    SourcePosition position
-) implements Expression {
+public record BinaryExpression(BinaryOperator operator, Expression left,
+        Expression right, SourcePosition position) implements Expression {
 
     @Override
-    public void prettyPrint(int h) {
-        String indent = "  ".repeat(h);
-        System.out.println(indent + "BinaryExpression operator=" + operator + " " + position.toString() + ":");
-        System.out.println(indent + "  left:");
-        left.prettyPrint(h + 2);
-        System.out.println(indent + "  right:");
-        right.prettyPrint(h + 2);
+    public void prettyPrint(int depth) {
+        AstPrinter branch = AstPrinter.branch(depth,
+                "BinaryExpression operator=" + operator, position);
+        branch.child("left", left);
+        branch.child("right", right);
     }
 }

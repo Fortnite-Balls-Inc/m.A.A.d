@@ -12,7 +12,8 @@ public sealed interface SemanticType {
         BOOLEAN,
         NULL,
         VOID,
-        ERROR; // service type
+        /** Carries a previous error through type analysis. */
+        ERROR;
 
         @Override
         public String toString() {
@@ -20,7 +21,12 @@ public sealed interface SemanticType {
         }
     }
 
-    record Array(SemanticType element, Integer size, Object identity) implements SemanticType {
+    /**
+     * A null size denotes a length unknown at compile time. Named arrays carry
+     * their defining declaration as identity, and anonymous arrays carry null.
+     */
+    record Array(SemanticType element, Integer size, Object identity)
+            implements SemanticType {
 
         @Override
         public String toString() {
@@ -28,7 +34,7 @@ public sealed interface SemanticType {
         }
     }
 
-    /** Uses object identity: equal field layouts do not make two record types interchangeable. */
+    /** Each record declaration introduces a distinct type identity. */
     final class Record implements SemanticType {
         private final String name;
         private final Map<String, SemanticType> fields;

@@ -28,6 +28,15 @@ The JVM entry point calls `main` or `Main`, parsing primitive parameters from co
 Arrays use 1-based indexing. `print` writes each value on its own line.
 End-to-end checks: `python3 tests/codegen.py /path/to/jasmin.jar` (after `mvn compile`).
 
+## Reading the compiler
+
+1. Follow a source file through tokenization and parsing. The grammar actions
+   build the AST that you can inspect with `--ast`. [Main.java](src/main/java/com/compiler/Main.java) · [parser.y](src/main/bison/parser.y)
+2. Trace the compilation stages and the semantic pass that assigns types and
+   binds each identifier to its declaration. [CompilerOutput.java](src/main/java/com/compiler/CompilerOutput.java) · [AnalysisPass.java](src/main/java/com/compiler/semantic/AnalysisPass.java)
+3. Follow a block through optimization, then see how the rewritten tree becomes
+   JVM classes. [OptimizationPass.java](src/main/java/com/compiler/optimization/OptimizationPass.java) · [JasminGenerator.java](src/main/java/com/compiler/codegen/JasminGenerator.java)
+
 ## Semantics and optimization
 
 Names must be declared before use; forward routine declarations support later

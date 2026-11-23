@@ -1,18 +1,13 @@
 package com.compiler.parser;
 
+import java.io.IOException;
+
 import com.compiler.lexer.Lexer;
 import com.compiler.lexer.Token;
 import com.compiler.lexer.TokenConstants;
 
-import java.io.IOException;
-
-/**
- * Adapts {@link Lexer} to {@link Parser.Lexer}.
- * <p> Maps {@link Lexer}'s {@link TokenConstants} values to the {@link Parser}'s values.
- * <p> Implements {@link #yylex}, {@link #getLVal}, {@link #yyerror}.
- */
+/** Maps scanner token codes to Bison symbols and reports syntax errors. */
 public final class BisonLexer implements Parser.Lexer {
-
     private final Lexer lexer;
     private Token currentToken;
 
@@ -89,8 +84,7 @@ public final class BisonLexer implements Parser.Lexer {
             case TokenConstants.NEWLINE -> NEWLINE;
 
             default -> throw new IllegalArgumentException(
-                    "Unknown lexer token type: " + currentToken.getType()
-            );
+                    "Unknown lexer token type: " + currentToken.getType());
         };
     }
 
@@ -106,11 +100,7 @@ public final class BisonLexer implements Parser.Lexer {
             return;
         }
 
-        System.err.printf(
-                "Syntax error at %d:%d: %s%n",
-                currentToken.getLine(),
-                currentToken.getColumn(),
-                message
-        );
+        System.err.printf("Syntax error at %d:%d: %s%n",
+                currentToken.getLine(), currentToken.getColumn(), message);
     }
 }

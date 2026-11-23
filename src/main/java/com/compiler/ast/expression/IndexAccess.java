@@ -1,20 +1,15 @@
 package com.compiler.ast.expression;
 
+import com.compiler.ast.AstPrinter;
 import com.compiler.ast.SourcePosition;
 
-public record IndexAccess(
-    Expression target,
-    Expression index,
-    SourcePosition position
-) implements Expression {
+public record IndexAccess(Expression target, Expression index,
+        SourcePosition position) implements Expression {
 
     @Override
-    public void prettyPrint(int h) {
-        String indent = "  ".repeat(h);
-        System.out.println(indent + "IndexAccess " + position.toString() + ":");
-        System.out.println(indent + "  target:");
-        target.prettyPrint(h + 2);
-        System.out.println(indent + "  index:");
-        index.prettyPrint(h + 2);
+    public void prettyPrint(int depth) {
+        AstPrinter branch = AstPrinter.branch(depth, "IndexAccess", position);
+        branch.child("target", target);
+        branch.child("index", index);
     }
 }

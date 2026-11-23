@@ -43,64 +43,65 @@ import java.util.ArrayList;
 /* "%code imports" blocks.  */
 /* "src/main/bison/parser.y":7  */
 
-    import com.compiler.lexer.Token;
-    import com.compiler.ast.SourcePosition;
-    import com.compiler.ast.expression.Expression;
-    import com.compiler.ast.expression.BooleanLiteral;
-    import com.compiler.ast.expression.IntegerLiteral;
-    import com.compiler.ast.expression.RealLiteral;
-    import com.compiler.ast.expression.NullLiteral;
-    import com.compiler.ast.expression.Identifier;
-    import com.compiler.ast.expression.BinaryExpression;
-    import com.compiler.ast.expression.BinaryOperator;
-    import com.compiler.ast.expression.UnaryExpression;
-    import com.compiler.ast.expression.UnaryOperator;
-    import com.compiler.ast.expression.FieldAccess;
-    import com.compiler.ast.expression.IndexAccess;
-    import com.compiler.ast.expression.RoutineCall;
-    import com.compiler.ast.expression.RecordConstructor;
-    import com.compiler.ast.expression.MemberInitialization;
-    import com.compiler.parser.support.ExpressionList;
-    import com.compiler.parser.support.MemberInitializationList;
-    import com.compiler.ast.types.ArrayType;
-    import com.compiler.ast.types.NamedType;
-    import com.compiler.ast.types.PrimitiveKind;
-    import com.compiler.ast.types.PrimitiveType;
-    import com.compiler.ast.types.RecordType;
-    import com.compiler.ast.types.TypeNode;
-    import com.compiler.ast.types.UserType;
-    import com.compiler.ast.declaration.SimpleDeclaration;
-    import com.compiler.ast.declaration.VariableDeclaration;
-    import com.compiler.ast.declaration.TypeDeclaration;
-    import com.compiler.parser.support.VariableDeclarationList;
-    import com.compiler.ast.Program;
-    import com.compiler.ast.Block;
-    import com.compiler.ast.BlockItem;
-    import com.compiler.ast.declaration.Declaration;
-    import com.compiler.ast.declaration.Parameter;
-    import com.compiler.ast.declaration.RoutineDeclaration;
-    import com.compiler.ast.declaration.RoutineBody;
-    import com.compiler.ast.declaration.BlockRoutineBody;
-    import com.compiler.ast.declaration.ExpressionRoutineBody;
-    import com.compiler.ast.statement.Statement;
-    import com.compiler.ast.statement.Assignment;
-    import com.compiler.ast.statement.RoutineCallStatement;
-    import com.compiler.ast.statement.WhileLoop;
-    import com.compiler.ast.statement.ForLoop;
-    import com.compiler.ast.statement.IfStatement;
-    import com.compiler.ast.statement.PrintStatement;
-    import com.compiler.ast.statement.ReturnStatement;
-    import com.compiler.ast.statement.IterationSource;
-    import com.compiler.ast.statement.ExpressionSource;
-    import com.compiler.ast.statement.RangeSource;
-    import com.compiler.parser.support.DeclarationList;
-    import com.compiler.parser.support.BlockItemList;
-    import com.compiler.parser.support.ParameterList;
-    import com.compiler.parser.support.RoutineHeader;
-    import java.util.Optional;
-    import java.util.List;
+import java.util.List;
+import java.util.Optional;
 
-/* "src/main/java/com/compiler/parser/Parser.java":104  */
+import com.compiler.ast.Block;
+import com.compiler.ast.BlockItem;
+import com.compiler.ast.Program;
+import com.compiler.ast.SourcePosition;
+import com.compiler.ast.declaration.BlockRoutineBody;
+import com.compiler.ast.declaration.Declaration;
+import com.compiler.ast.declaration.ExpressionRoutineBody;
+import com.compiler.ast.declaration.Parameter;
+import com.compiler.ast.declaration.RoutineBody;
+import com.compiler.ast.declaration.RoutineDeclaration;
+import com.compiler.ast.declaration.SimpleDeclaration;
+import com.compiler.ast.declaration.TypeDeclaration;
+import com.compiler.ast.declaration.VariableDeclaration;
+import com.compiler.ast.expression.BinaryExpression;
+import com.compiler.ast.expression.BinaryOperator;
+import com.compiler.ast.expression.BooleanLiteral;
+import com.compiler.ast.expression.Expression;
+import com.compiler.ast.expression.FieldAccess;
+import com.compiler.ast.expression.Identifier;
+import com.compiler.ast.expression.IndexAccess;
+import com.compiler.ast.expression.IntegerLiteral;
+import com.compiler.ast.expression.MemberInitialization;
+import com.compiler.ast.expression.NullLiteral;
+import com.compiler.ast.expression.RealLiteral;
+import com.compiler.ast.expression.RecordConstructor;
+import com.compiler.ast.expression.RoutineCall;
+import com.compiler.ast.expression.UnaryExpression;
+import com.compiler.ast.expression.UnaryOperator;
+import com.compiler.ast.statement.Assignment;
+import com.compiler.ast.statement.ExpressionSource;
+import com.compiler.ast.statement.ForLoop;
+import com.compiler.ast.statement.IfStatement;
+import com.compiler.ast.statement.IterationSource;
+import com.compiler.ast.statement.PrintStatement;
+import com.compiler.ast.statement.RangeSource;
+import com.compiler.ast.statement.ReturnStatement;
+import com.compiler.ast.statement.RoutineCallStatement;
+import com.compiler.ast.statement.Statement;
+import com.compiler.ast.statement.WhileLoop;
+import com.compiler.ast.types.ArrayType;
+import com.compiler.ast.types.NamedType;
+import com.compiler.ast.types.PrimitiveKind;
+import com.compiler.ast.types.PrimitiveType;
+import com.compiler.ast.types.RecordType;
+import com.compiler.ast.types.TypeNode;
+import com.compiler.ast.types.UserType;
+import com.compiler.lexer.Token;
+import com.compiler.parser.support.BlockItemList;
+import com.compiler.parser.support.DeclarationList;
+import com.compiler.parser.support.ExpressionList;
+import com.compiler.parser.support.MemberInitializationList;
+import com.compiler.parser.support.ParameterList;
+import com.compiler.parser.support.RoutineHeader;
+import com.compiler.parser.support.VariableDeclarationList;
+
+/* "src/main/java/com/compiler/parser/Parser.java":105  */
 
 /**
  * A Bison parser, automatically generated from <tt>src/main/bison/parser.y</tt>.
@@ -759,890 +760,922 @@ public class Parser
       {
           case 2: /* program: optional_separators  */
   if (yyn == 2)
-    /* "src/main/bison/parser.y":195  */
-      { program = new Program(List.of(), new SourcePosition(1, 1)); yyval = program; };
+    /* "src/main/bison/parser.y":193  */
+      {
+          program = new Program(List.of(), new SourcePosition(1, 1));
+          yyval = program;
+      };
   break;
 
 
   case 3: /* program: optional_separators declaration_sequence  */
   if (yyn == 3)
-    /* "src/main/bison/parser.y":197  */
-      { program = new Program(((DeclarationList)(yystack.valueAt (0))).values(), new SourcePosition(1, 1)); yyval = program; };
+    /* "src/main/bison/parser.y":198  */
+      {
+          program = new Program(((DeclarationList)(yystack.valueAt (0))).values(), new SourcePosition(1, 1));
+          yyval = program;
+      };
   break;
 
 
   case 4: /* declaration_sequence: top_level_declaration optional_separators  */
   if (yyn == 4)
-    /* "src/main/bison/parser.y":208  */
+    /* "src/main/bison/parser.y":207  */
       {
-        DeclarationList declarations = new DeclarationList(); // the last TLD
-        declarations.addFirst(((Declaration)(yystack.valueAt (1))));
-        yyval = declarations;
+          DeclarationList declarations = new DeclarationList();
+          declarations.addFirst(((Declaration)(yystack.valueAt (1))));
+          yyval = declarations;
       };
   break;
 
 
   case 5: /* declaration_sequence: top_level_declaration separators declaration_sequence  */
   if (yyn == 5)
-    /* "src/main/bison/parser.y":214  */
-      { ((DeclarationList)(yystack.valueAt (0))).addFirst(((Declaration)(yystack.valueAt (2)))); yyval = ((DeclarationList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":213  */
+      {
+          ((DeclarationList)(yystack.valueAt (0))).addFirst(((Declaration)(yystack.valueAt (2))));
+          yyval = ((DeclarationList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 6: /* top_level_declaration: simple_declaration  */
   if (yyn == 6)
-    /* "src/main/bison/parser.y":227  */
+    /* "src/main/bison/parser.y":222  */
       { yyval = ((SimpleDeclaration)(yystack.valueAt (0))); };
   break;
 
 
   case 7: /* top_level_declaration: routine_declaration  */
   if (yyn == 7)
-    /* "src/main/bison/parser.y":229  */
+    /* "src/main/bison/parser.y":224  */
       { yyval = ((RoutineDeclaration)(yystack.valueAt (0))); };
   break;
 
 
   case 8: /* simple_declaration: variable_declaration  */
   if (yyn == 8)
-    /* "src/main/bison/parser.y":242  */
+    /* "src/main/bison/parser.y":231  */
       { yyval = ((VariableDeclaration)(yystack.valueAt (0))); };
   break;
 
 
   case 9: /* simple_declaration: type_declaration  */
   if (yyn == 9)
-    /* "src/main/bison/parser.y":244  */
+    /* "src/main/bison/parser.y":233  */
       { yyval = ((TypeDeclaration)(yystack.valueAt (0))); };
   break;
 
 
   case 10: /* variable_declaration: VAR IDENTIFIER IS expression  */
   if (yyn == 10)
-    /* "src/main/bison/parser.y":253  */
+    /* "src/main/bison/parser.y":238  */
       {
-        yyval = new VariableDeclaration(
-            ((Token)(yystack.valueAt (2))).getStringValue(), Optional.empty(), Optional.of(((Expression)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (3))))
-        );
+          yyval = new VariableDeclaration(((Token)(yystack.valueAt (2))).getStringValue(),
+                  Optional.empty(), Optional.of(((Expression)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (3)))));
       };
   break;
 
 
   case 11: /* variable_declaration: VAR IDENTIFIER COLON type optional_initializer  */
   if (yyn == 11)
-    /* "src/main/bison/parser.y":259  */
+    /* "src/main/bison/parser.y":243  */
       {
-        yyval = new VariableDeclaration(
-            ((Token)(yystack.valueAt (3))).getStringValue(), Optional.of(((TypeNode)(yystack.valueAt (1)))), Optional.ofNullable(((Expression)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (4))))
-        );
+          yyval = new VariableDeclaration(((Token)(yystack.valueAt (3))).getStringValue(),
+                  Optional.of(((TypeNode)(yystack.valueAt (1)))), Optional.ofNullable(((Expression)(yystack.valueAt (0)))),
+                  position(((Token)(yystack.valueAt (4)))));
       };
   break;
 
 
   case 12: /* type_declaration: TYPE IDENTIFIER IS type  */
   if (yyn == 12)
-    /* "src/main/bison/parser.y":269  */
+    /* "src/main/bison/parser.y":252  */
       { yyval = new TypeDeclaration(((Token)(yystack.valueAt (2))).getStringValue(), ((TypeNode)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (3))))); };
   break;
 
 
   case 13: /* expression: xor_expression  */
   if (yyn == 13)
-    /* "src/main/bison/parser.y":291  */
+    /* "src/main/bison/parser.y":259  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 14: /* expression: expression OR xor_expression  */
   if (yyn == 14)
-    /* "src/main/bison/parser.y":293  */
-      { yyval = new BinaryExpression(BinaryOperator.OR, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":261  */
+      { yyval = binary(BinaryOperator.OR, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 15: /* xor_expression: and_expression  */
   if (yyn == 15)
-    /* "src/main/bison/parser.y":298  */
+    /* "src/main/bison/parser.y":266  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 16: /* xor_expression: xor_expression XOR and_expression  */
   if (yyn == 16)
-    /* "src/main/bison/parser.y":300  */
-      { yyval = new BinaryExpression(BinaryOperator.XOR, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":268  */
+      { yyval = binary(BinaryOperator.XOR, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 17: /* and_expression: relation  */
   if (yyn == 17)
-    /* "src/main/bison/parser.y":305  */
+    /* "src/main/bison/parser.y":273  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 18: /* and_expression: and_expression AND relation  */
   if (yyn == 18)
-    /* "src/main/bison/parser.y":307  */
-      { yyval = new BinaryExpression(BinaryOperator.AND, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":275  */
+      { yyval = binary(BinaryOperator.AND, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 19: /* relation: simple  */
   if (yyn == 19)
-    /* "src/main/bison/parser.y":312  */
+    /* "src/main/bison/parser.y":280  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 20: /* relation: simple comparison_operator simple  */
   if (yyn == 20)
-    /* "src/main/bison/parser.y":314  */
-      { yyval = new BinaryExpression(((BinaryOperator)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":282  */
+      { yyval = binary(((BinaryOperator)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 21: /* comparison_operator: LT  */
   if (yyn == 21)
-    /* "src/main/bison/parser.y":318  */
+    /* "src/main/bison/parser.y":286  */
           { yyval = BinaryOperator.LESS_THAN; };
   break;
 
 
   case 22: /* comparison_operator: LE  */
   if (yyn == 22)
-    /* "src/main/bison/parser.y":319  */
+    /* "src/main/bison/parser.y":287  */
           { yyval = BinaryOperator.LESS_THAN_OR_EQUAL; };
   break;
 
 
   case 23: /* comparison_operator: GT  */
   if (yyn == 23)
-    /* "src/main/bison/parser.y":320  */
+    /* "src/main/bison/parser.y":288  */
           { yyval = BinaryOperator.GREATER_THAN; };
   break;
 
 
   case 24: /* comparison_operator: GE  */
   if (yyn == 24)
-    /* "src/main/bison/parser.y":321  */
+    /* "src/main/bison/parser.y":289  */
           { yyval = BinaryOperator.GREATER_THAN_OR_EQUAL; };
   break;
 
 
   case 25: /* comparison_operator: EQ  */
   if (yyn == 25)
-    /* "src/main/bison/parser.y":322  */
+    /* "src/main/bison/parser.y":290  */
           { yyval = BinaryOperator.EQUAL; };
   break;
 
 
   case 26: /* comparison_operator: NEQ  */
   if (yyn == 26)
-    /* "src/main/bison/parser.y":323  */
+    /* "src/main/bison/parser.y":291  */
           { yyval = BinaryOperator.NOT_EQUAL; };
   break;
 
 
   case 27: /* simple: factor  */
   if (yyn == 27)
-    /* "src/main/bison/parser.y":328  */
+    /* "src/main/bison/parser.y":296  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 28: /* simple: simple PLUS factor  */
   if (yyn == 28)
-    /* "src/main/bison/parser.y":330  */
-      { yyval = new BinaryExpression(BinaryOperator.ADD, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":298  */
+      { yyval = binary(BinaryOperator.ADD, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 29: /* simple: simple MINUS factor  */
   if (yyn == 29)
-    /* "src/main/bison/parser.y":332  */
-      { yyval = new BinaryExpression(BinaryOperator.SUBTRACT, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":300  */
+      { yyval = binary(BinaryOperator.SUBTRACT, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 30: /* factor: summand  */
   if (yyn == 30)
-    /* "src/main/bison/parser.y":337  */
+    /* "src/main/bison/parser.y":305  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 31: /* factor: factor STAR summand  */
   if (yyn == 31)
-    /* "src/main/bison/parser.y":339  */
-      { yyval = new BinaryExpression(BinaryOperator.MULTIPLY, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":307  */
+      { yyval = binary(BinaryOperator.MULTIPLY, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 32: /* factor: factor SLASH summand  */
   if (yyn == 32)
-    /* "src/main/bison/parser.y":341  */
-      { yyval = new BinaryExpression(BinaryOperator.DIVIDE, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":309  */
+      { yyval = binary(BinaryOperator.DIVIDE, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 33: /* factor: factor PERCENT summand  */
   if (yyn == 33)
-    /* "src/main/bison/parser.y":343  */
-      { yyval = new BinaryExpression(BinaryOperator.REMAINDER, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
+    /* "src/main/bison/parser.y":311  */
+      { yyval = binary(BinaryOperator.REMAINDER, ((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0)))); };
   break;
 
 
   case 34: /* summand: primary  */
   if (yyn == 34)
-    /* "src/main/bison/parser.y":348  */
+    /* "src/main/bison/parser.y":316  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 35: /* summand: PLUS summand  */
   if (yyn == 35)
-    /* "src/main/bison/parser.y":350  */
+    /* "src/main/bison/parser.y":318  */
       { yyval = new UnaryExpression(UnaryOperator.PLUS, ((Expression)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
   case 36: /* summand: MINUS summand  */
   if (yyn == 36)
-    /* "src/main/bison/parser.y":352  */
+    /* "src/main/bison/parser.y":320  */
       { yyval = new UnaryExpression(UnaryOperator.MINUS, ((Expression)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
   case 37: /* summand: NOT summand  */
   if (yyn == 37)
-    /* "src/main/bison/parser.y":354  */
+    /* "src/main/bison/parser.y":322  */
       { yyval = new UnaryExpression(UnaryOperator.NOT, ((Expression)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
   case 38: /* primary: integer_literal  */
   if (yyn == 38)
-    /* "src/main/bison/parser.y":359  */
+    /* "src/main/bison/parser.y":327  */
       { yyval = ((IntegerLiteral)(yystack.valueAt (0))); };
   break;
 
 
   case 39: /* primary: real_literal  */
   if (yyn == 39)
-    /* "src/main/bison/parser.y":361  */
+    /* "src/main/bison/parser.y":329  */
       { yyval = ((RealLiteral)(yystack.valueAt (0))); };
   break;
 
 
   case 40: /* primary: boolean_literal  */
   if (yyn == 40)
-    /* "src/main/bison/parser.y":363  */
+    /* "src/main/bison/parser.y":331  */
       { yyval = ((BooleanLiteral)(yystack.valueAt (0))); };
   break;
 
 
   case 41: /* primary: modifiable_primary  */
   if (yyn == 41)
-    /* "src/main/bison/parser.y":365  */
+    /* "src/main/bison/parser.y":333  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 42: /* primary: routine_call  */
   if (yyn == 42)
-    /* "src/main/bison/parser.y":367  */
+    /* "src/main/bison/parser.y":335  */
       { yyval = ((RoutineCall)(yystack.valueAt (0))); };
   break;
 
 
   case 43: /* primary: constructor_expression  */
   if (yyn == 43)
-    /* "src/main/bison/parser.y":369  */
+    /* "src/main/bison/parser.y":337  */
       { yyval = ((RecordConstructor)(yystack.valueAt (0))); };
   break;
 
 
   case 44: /* primary: LPAREN expression RPAREN  */
   if (yyn == 44)
-    /* "src/main/bison/parser.y":371  */
+    /* "src/main/bison/parser.y":339  */
       { yyval = ((Expression)(yystack.valueAt (1))); };
   break;
 
 
   case 45: /* primary: NULL  */
   if (yyn == 45)
-    /* "src/main/bison/parser.y":373  */
+    /* "src/main/bison/parser.y":341  */
       { yyval = new NullLiteral(position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 46: /* integer_literal: INTEGER_LITERAL  */
   if (yyn == 46)
-    /* "src/main/bison/parser.y":378  */
+    /* "src/main/bison/parser.y":346  */
       { yyval = new IntegerLiteral(((Token)(yystack.valueAt (0))).getIntValue(), position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 47: /* real_literal: REAL_LITERAL  */
   if (yyn == 47)
-    /* "src/main/bison/parser.y":383  */
+    /* "src/main/bison/parser.y":351  */
       { yyval = new RealLiteral(((Token)(yystack.valueAt (0))).getRealValue(), position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 48: /* boolean_literal: TRUE  */
   if (yyn == 48)
-    /* "src/main/bison/parser.y":388  */
+    /* "src/main/bison/parser.y":356  */
       { yyval = new BooleanLiteral(true, position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 49: /* boolean_literal: FALSE  */
   if (yyn == 49)
-    /* "src/main/bison/parser.y":390  */
+    /* "src/main/bison/parser.y":358  */
       { yyval = new BooleanLiteral(false, position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 50: /* modifiable_primary: IDENTIFIER  */
   if (yyn == 50)
-    /* "src/main/bison/parser.y":395  */
+    /* "src/main/bison/parser.y":363  */
       { yyval = new Identifier(((Token)(yystack.valueAt (0))).getStringValue(), position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 51: /* modifiable_primary: modifiable_primary DOT IDENTIFIER  */
   if (yyn == 51)
-    /* "src/main/bison/parser.y":397  */
+    /* "src/main/bison/parser.y":365  */
       { yyval = new FieldAccess(((Expression)(yystack.valueAt (2))), ((Token)(yystack.valueAt (0))).getStringValue(), ((Expression)(yystack.valueAt (2))).position()); };
   break;
 
 
   case 52: /* modifiable_primary: modifiable_primary LBRACKET expression RBRACKET  */
   if (yyn == 52)
-    /* "src/main/bison/parser.y":399  */
+    /* "src/main/bison/parser.y":367  */
       { yyval = new IndexAccess(((Expression)(yystack.valueAt (3))), ((Expression)(yystack.valueAt (1))), ((Expression)(yystack.valueAt (3))).position()); };
   break;
 
 
   case 53: /* routine_call: IDENTIFIER LPAREN optional_newlines optional_arguments RPAREN  */
   if (yyn == 53)
-    /* "src/main/bison/parser.y":404  */
-      { yyval = new RoutineCall(((Token)(yystack.valueAt (4))).getStringValue(), ((ExpressionList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (4))))); };
+    /* "src/main/bison/parser.y":372  */
+      {
+          yyval = new RoutineCall(((Token)(yystack.valueAt (4))).getStringValue(),
+                  ((ExpressionList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (4)))));
+      };
   break;
 
 
   case 54: /* optional_arguments: %empty  */
   if (yyn == 54)
-    /* "src/main/bison/parser.y":409  */
+    /* "src/main/bison/parser.y":380  */
       { yyval = new ExpressionList(); };
   break;
 
 
   case 55: /* optional_arguments: argument_list optional_newlines  */
   if (yyn == 55)
-    /* "src/main/bison/parser.y":411  */
+    /* "src/main/bison/parser.y":382  */
       { yyval = ((ExpressionList)(yystack.valueAt (1))); };
   break;
 
 
   case 56: /* argument_list: expression argument_list_tail  */
   if (yyn == 56)
-    /* "src/main/bison/parser.y":416  */
-      { ((ExpressionList)(yystack.valueAt (0))).addFirst(((Expression)(yystack.valueAt (1)))); yyval = ((ExpressionList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":387  */
+      {
+          ((ExpressionList)(yystack.valueAt (0))).addFirst(((Expression)(yystack.valueAt (1))));
+          yyval = ((ExpressionList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 57: /* argument_list_tail: %empty  */
   if (yyn == 57)
-    /* "src/main/bison/parser.y":421  */
+    /* "src/main/bison/parser.y":395  */
       { yyval = new ExpressionList(); };
   break;
 
 
   case 58: /* argument_list_tail: COMMA optional_newlines expression argument_list_tail  */
   if (yyn == 58)
-    /* "src/main/bison/parser.y":423  */
-      { ((ExpressionList)(yystack.valueAt (0))).addFirst(((Expression)(yystack.valueAt (1)))); yyval = ((ExpressionList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":397  */
+      {
+          ((ExpressionList)(yystack.valueAt (0))).addFirst(((Expression)(yystack.valueAt (1))));
+          yyval = ((ExpressionList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 59: /* constructor_expression: NEW IDENTIFIER LPAREN optional_newlines optional_members RPAREN  */
   if (yyn == 59)
-    /* "src/main/bison/parser.y":428  */
-      { yyval = new RecordConstructor(((Token)(yystack.valueAt (4))).getStringValue(), ((MemberInitializationList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (5))))); };
+    /* "src/main/bison/parser.y":405  */
+      {
+          yyval = new RecordConstructor(((Token)(yystack.valueAt (4))).getStringValue(),
+                  ((MemberInitializationList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (5)))));
+      };
   break;
 
 
   case 60: /* optional_members: %empty  */
   if (yyn == 60)
-    /* "src/main/bison/parser.y":433  */
+    /* "src/main/bison/parser.y":413  */
       { yyval = new MemberInitializationList(); };
   break;
 
 
   case 61: /* optional_members: member_initialization_list optional_newlines  */
   if (yyn == 61)
-    /* "src/main/bison/parser.y":435  */
+    /* "src/main/bison/parser.y":415  */
       { yyval = ((MemberInitializationList)(yystack.valueAt (1))); };
   break;
 
 
   case 62: /* member_initialization_list: member_initialization member_initialization_list_tail  */
   if (yyn == 62)
-    /* "src/main/bison/parser.y":440  */
-      { ((MemberInitializationList)(yystack.valueAt (0))).addFirst(((MemberInitialization)(yystack.valueAt (1)))); yyval = ((MemberInitializationList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":420  */
+      {
+          ((MemberInitializationList)(yystack.valueAt (0))).addFirst(((MemberInitialization)(yystack.valueAt (1))));
+          yyval = ((MemberInitializationList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 63: /* member_initialization_list_tail: %empty  */
   if (yyn == 63)
-    /* "src/main/bison/parser.y":445  */
+    /* "src/main/bison/parser.y":428  */
       { yyval = new MemberInitializationList(); };
   break;
 
 
   case 64: /* member_initialization_list_tail: COMMA optional_newlines member_initialization member_initialization_list_tail  */
   if (yyn == 64)
-    /* "src/main/bison/parser.y":447  */
-      { ((MemberInitializationList)(yystack.valueAt (0))).addFirst(((MemberInitialization)(yystack.valueAt (1)))); yyval = ((MemberInitializationList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":431  */
+      {
+          ((MemberInitializationList)(yystack.valueAt (0))).addFirst(((MemberInitialization)(yystack.valueAt (1))));
+          yyval = ((MemberInitializationList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 65: /* member_initialization: IDENTIFIER IS expression  */
   if (yyn == 65)
-    /* "src/main/bison/parser.y":452  */
+    /* "src/main/bison/parser.y":439  */
       { yyval = new MemberInitialization(((Token)(yystack.valueAt (2))).getStringValue(), ((Expression)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (2))))); };
   break;
 
 
   case 66: /* optional_initializer: %empty  */
   if (yyn == 66)
-    /* "src/main/bison/parser.y":457  */
+    /* "src/main/bison/parser.y":444  */
       { yyval = null; };
   break;
 
 
   case 67: /* optional_initializer: IS expression  */
   if (yyn == 67)
-    /* "src/main/bison/parser.y":459  */
+    /* "src/main/bison/parser.y":446  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 68: /* type: primitive_type  */
   if (yyn == 68)
-    /* "src/main/bison/parser.y":472  */
+    /* "src/main/bison/parser.y":453  */
       { yyval = ((PrimitiveType)(yystack.valueAt (0))); };
   break;
 
 
   case 69: /* type: user_type  */
   if (yyn == 69)
-    /* "src/main/bison/parser.y":474  */
+    /* "src/main/bison/parser.y":455  */
       { yyval = ((UserType)(yystack.valueAt (0))); };
   break;
 
 
   case 70: /* type: named_type  */
   if (yyn == 70)
-    /* "src/main/bison/parser.y":476  */
+    /* "src/main/bison/parser.y":457  */
       { yyval = ((NamedType)(yystack.valueAt (0))); };
   break;
 
 
   case 71: /* primitive_type: INTEGER  */
   if (yyn == 71)
-    /* "src/main/bison/parser.y":481  */
+    /* "src/main/bison/parser.y":462  */
       { yyval = new PrimitiveType(PrimitiveKind.INTEGER, position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 72: /* primitive_type: REAL  */
   if (yyn == 72)
-    /* "src/main/bison/parser.y":483  */
+    /* "src/main/bison/parser.y":464  */
       { yyval = new PrimitiveType(PrimitiveKind.REAL, position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 73: /* primitive_type: BOOLEAN  */
   if (yyn == 73)
-    /* "src/main/bison/parser.y":485  */
+    /* "src/main/bison/parser.y":466  */
       { yyval = new PrimitiveType(PrimitiveKind.BOOLEAN, position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 74: /* user_type: array_type  */
   if (yyn == 74)
-    /* "src/main/bison/parser.y":490  */
+    /* "src/main/bison/parser.y":471  */
       { yyval = ((ArrayType)(yystack.valueAt (0))); };
   break;
 
 
   case 75: /* user_type: record_type  */
   if (yyn == 75)
-    /* "src/main/bison/parser.y":492  */
+    /* "src/main/bison/parser.y":473  */
       { yyval = ((RecordType)(yystack.valueAt (0))); };
   break;
 
 
   case 76: /* array_type: ARRAY LBRACKET optional_array_size RBRACKET type  */
   if (yyn == 76)
-    /* "src/main/bison/parser.y":497  */
+    /* "src/main/bison/parser.y":478  */
       { yyval = new ArrayType(Optional.ofNullable(((Expression)(yystack.valueAt (2)))), ((TypeNode)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (4))))); };
   break;
 
 
   case 77: /* optional_array_size: %empty  */
   if (yyn == 77)
-    /* "src/main/bison/parser.y":502  */
+    /* "src/main/bison/parser.y":483  */
       { yyval = null; };
   break;
 
 
   case 78: /* optional_array_size: expression  */
   if (yyn == 78)
-    /* "src/main/bison/parser.y":504  */
+    /* "src/main/bison/parser.y":485  */
       { yyval = ((Expression)(yystack.valueAt (0))); };
   break;
 
 
   case 79: /* record_type: RECORD optional_separators END  */
   if (yyn == 79)
-    /* "src/main/bison/parser.y":509  */
+    /* "src/main/bison/parser.y":490  */
       { yyval = new RecordType(List.of(), position(((Token)(yystack.valueAt (2))))); };
   break;
 
 
   case 80: /* record_type: RECORD optional_separators record_member_sequence END  */
   if (yyn == 80)
-    /* "src/main/bison/parser.y":511  */
+    /* "src/main/bison/parser.y":492  */
       { yyval = new RecordType(((VariableDeclarationList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (3))))); };
   break;
 
 
   case 81: /* record_member_sequence: variable_declaration optional_separators  */
   if (yyn == 81)
-    /* "src/main/bison/parser.y":516  */
+    /* "src/main/bison/parser.y":497  */
       {
-        VariableDeclarationList fields = new VariableDeclarationList();
-        fields.addFirst(((VariableDeclaration)(yystack.valueAt (1))));
-        yyval = fields;
+          VariableDeclarationList fields = new VariableDeclarationList();
+          fields.addFirst(((VariableDeclaration)(yystack.valueAt (1))));
+          yyval = fields;
       };
   break;
 
 
   case 82: /* record_member_sequence: variable_declaration separators record_member_sequence  */
   if (yyn == 82)
-    /* "src/main/bison/parser.y":522  */
-      { ((VariableDeclarationList)(yystack.valueAt (0))).addFirst(((VariableDeclaration)(yystack.valueAt (2)))); yyval = ((VariableDeclarationList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":503  */
+      {
+          ((VariableDeclarationList)(yystack.valueAt (0))).addFirst(((VariableDeclaration)(yystack.valueAt (2))));
+          yyval = ((VariableDeclarationList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 83: /* named_type: IDENTIFIER  */
   if (yyn == 83)
-    /* "src/main/bison/parser.y":527  */
+    /* "src/main/bison/parser.y":511  */
       { yyval = new NamedType(((Token)(yystack.valueAt (0))).getStringValue(), position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 84: /* statement: assignment  */
   if (yyn == 84)
-    /* "src/main/bison/parser.y":540  */
+    /* "src/main/bison/parser.y":518  */
       { yyval = ((Assignment)(yystack.valueAt (0))); };
   break;
 
 
   case 85: /* statement: routine_call  */
   if (yyn == 85)
-    /* "src/main/bison/parser.y":542  */
+    /* "src/main/bison/parser.y":520  */
       { yyval = new RoutineCallStatement(((RoutineCall)(yystack.valueAt (0))), ((RoutineCall)(yystack.valueAt (0))).position()); };
   break;
 
 
   case 86: /* statement: while_loop  */
   if (yyn == 86)
-    /* "src/main/bison/parser.y":544  */
+    /* "src/main/bison/parser.y":522  */
       { yyval = ((WhileLoop)(yystack.valueAt (0))); };
   break;
 
 
   case 87: /* statement: for_loop  */
   if (yyn == 87)
-    /* "src/main/bison/parser.y":546  */
+    /* "src/main/bison/parser.y":524  */
       { yyval = ((ForLoop)(yystack.valueAt (0))); };
   break;
 
 
   case 88: /* statement: if_statement  */
   if (yyn == 88)
-    /* "src/main/bison/parser.y":548  */
+    /* "src/main/bison/parser.y":526  */
       { yyval = ((IfStatement)(yystack.valueAt (0))); };
   break;
 
 
   case 89: /* statement: print_statement  */
   if (yyn == 89)
-    /* "src/main/bison/parser.y":550  */
+    /* "src/main/bison/parser.y":528  */
       { yyval = ((PrintStatement)(yystack.valueAt (0))); };
   break;
 
 
   case 90: /* statement: return_statement  */
   if (yyn == 90)
-    /* "src/main/bison/parser.y":552  */
+    /* "src/main/bison/parser.y":530  */
       { yyval = ((ReturnStatement)(yystack.valueAt (0))); };
   break;
 
 
   case 91: /* assignment: modifiable_primary ASSIGN expression  */
   if (yyn == 91)
-    /* "src/main/bison/parser.y":557  */
+    /* "src/main/bison/parser.y":535  */
       { yyval = new Assignment(((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
   break;
 
 
   case 92: /* while_loop: WHILE expression LOOP body END  */
   if (yyn == 92)
-    /* "src/main/bison/parser.y":562  */
-      { yyval = new WhileLoop(((Expression)(yystack.valueAt (3))), new Block(((BlockItemList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (2))))), position(((Token)(yystack.valueAt (4))))); };
+    /* "src/main/bison/parser.y":540  */
+      {
+          Block loopBody = new Block(((BlockItemList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (2)))));
+          yyval = new WhileLoop(((Expression)(yystack.valueAt (3))), loopBody, position(((Token)(yystack.valueAt (4)))));
+      };
   break;
 
 
   case 93: /* body: optional_separators  */
   if (yyn == 93)
-    /* "src/main/bison/parser.y":567  */
+    /* "src/main/bison/parser.y":548  */
       { yyval = new BlockItemList(); };
   break;
 
 
   case 94: /* body: optional_separators body_sequence  */
   if (yyn == 94)
-    /* "src/main/bison/parser.y":569  */
+    /* "src/main/bison/parser.y":550  */
       { yyval = ((BlockItemList)(yystack.valueAt (0))); };
   break;
 
 
   case 95: /* body_sequence: body_item optional_separators  */
   if (yyn == 95)
-    /* "src/main/bison/parser.y":574  */
+    /* "src/main/bison/parser.y":555  */
       {
-        BlockItemList items = new BlockItemList();
-        items.addFirst(((BlockItem)(yystack.valueAt (1))));
-        yyval = items;
+          BlockItemList items = new BlockItemList();
+          items.addFirst(((BlockItem)(yystack.valueAt (1))));
+          yyval = items;
       };
   break;
 
 
   case 96: /* body_sequence: body_item separators body_sequence  */
   if (yyn == 96)
-    /* "src/main/bison/parser.y":580  */
-      { ((BlockItemList)(yystack.valueAt (0))).addFirst(((BlockItem)(yystack.valueAt (2)))); yyval = ((BlockItemList)(yystack.valueAt (0))); };
+    /* "src/main/bison/parser.y":561  */
+      {
+          ((BlockItemList)(yystack.valueAt (0))).addFirst(((BlockItem)(yystack.valueAt (2))));
+          yyval = ((BlockItemList)(yystack.valueAt (0)));
+      };
   break;
 
 
   case 97: /* body_item: simple_declaration  */
   if (yyn == 97)
-    /* "src/main/bison/parser.y":585  */
+    /* "src/main/bison/parser.y":569  */
       { yyval = ((SimpleDeclaration)(yystack.valueAt (0))); };
   break;
 
 
   case 98: /* body_item: statement  */
   if (yyn == 98)
-    /* "src/main/bison/parser.y":587  */
+    /* "src/main/bison/parser.y":571  */
       { yyval = ((Statement)(yystack.valueAt (0))); };
   break;
 
 
   case 99: /* for_loop: FOR IDENTIFIER IN range optional_reverse LOOP body END  */
   if (yyn == 99)
-    /* "src/main/bison/parser.y":592  */
+    /* "src/main/bison/parser.y":576  */
       {
-        yyval = new ForLoop(
-            ((Token)(yystack.valueAt (6))).getStringValue(), ((IterationSource)(yystack.valueAt (4))), ((Boolean)(yystack.valueAt (3))), new Block(((BlockItemList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (2))))), position(((Token)(yystack.valueAt (7))))
-        );
+          Block loopBody = new Block(((BlockItemList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (2)))));
+          yyval = new ForLoop(((Token)(yystack.valueAt (6))).getStringValue(), ((IterationSource)(yystack.valueAt (4))), ((Boolean)(yystack.valueAt (3))),
+                  loopBody, position(((Token)(yystack.valueAt (7)))));
       };
   break;
 
 
   case 100: /* range: expression  */
   if (yyn == 100)
-    /* "src/main/bison/parser.y":601  */
+    /* "src/main/bison/parser.y":585  */
       { yyval = new ExpressionSource(((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (0))).position()); };
   break;
 
 
   case 101: /* range: expression DOTDOT expression  */
   if (yyn == 101)
-    /* "src/main/bison/parser.y":603  */
+    /* "src/main/bison/parser.y":587  */
       { yyval = new RangeSource(((Expression)(yystack.valueAt (2))), ((Expression)(yystack.valueAt (0))), ((Expression)(yystack.valueAt (2))).position()); };
   break;
 
 
   case 102: /* optional_reverse: %empty  */
   if (yyn == 102)
-    /* "src/main/bison/parser.y":608  */
+    /* "src/main/bison/parser.y":592  */
       { yyval = false; };
   break;
 
 
   case 103: /* optional_reverse: REVERSE  */
   if (yyn == 103)
-    /* "src/main/bison/parser.y":610  */
+    /* "src/main/bison/parser.y":594  */
       { yyval = true; };
   break;
 
 
   case 104: /* if_statement: IF expression THEN body optional_else END  */
   if (yyn == 104)
-    /* "src/main/bison/parser.y":615  */
+    /* "src/main/bison/parser.y":599  */
       {
-        yyval = new IfStatement(
-            ((Expression)(yystack.valueAt (4))), new Block(((BlockItemList)(yystack.valueAt (2))).values(), position(((Token)(yystack.valueAt (3))))), Optional.ofNullable(((Block)(yystack.valueAt (1)))), position(((Token)(yystack.valueAt (5))))
-        );
+          Block thenBlock = new Block(((BlockItemList)(yystack.valueAt (2))).values(), position(((Token)(yystack.valueAt (3)))));
+          yyval = new IfStatement(((Expression)(yystack.valueAt (4))), thenBlock,
+                  Optional.ofNullable(((Block)(yystack.valueAt (1)))), position(((Token)(yystack.valueAt (5)))));
       };
   break;
 
 
   case 105: /* optional_else: %empty  */
   if (yyn == 105)
-    /* "src/main/bison/parser.y":624  */
+    /* "src/main/bison/parser.y":608  */
       { yyval = null; };
   break;
 
 
   case 106: /* optional_else: ELSE body  */
   if (yyn == 106)
-    /* "src/main/bison/parser.y":626  */
+    /* "src/main/bison/parser.y":610  */
       { yyval = new Block(((BlockItemList)(yystack.valueAt (0))).values(), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
   case 107: /* print_statement: PRINT optional_newlines argument_list  */
   if (yyn == 107)
-    /* "src/main/bison/parser.y":631  */
+    /* "src/main/bison/parser.y":615  */
       { yyval = new PrintStatement(((ExpressionList)(yystack.valueAt (0))).values(), position(((Token)(yystack.valueAt (2))))); };
   break;
 
 
   case 108: /* return_statement: RETURN  */
   if (yyn == 108)
-    /* "src/main/bison/parser.y":636  */
+    /* "src/main/bison/parser.y":620  */
       { yyval = new ReturnStatement(Optional.empty(), position(((Token)(yystack.valueAt (0))))); };
   break;
 
 
   case 109: /* return_statement: RETURN expression  */
   if (yyn == 109)
-    /* "src/main/bison/parser.y":638  */
+    /* "src/main/bison/parser.y":622  */
       { yyval = new ReturnStatement(Optional.of(((Expression)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
   case 110: /* routine_declaration: routine_header  */
   if (yyn == 110)
-    /* "src/main/bison/parser.y":651  */
-      {
-        yyval = new RoutineDeclaration(
-            ((RoutineHeader)(yystack.valueAt (0))).name(), ((RoutineHeader)(yystack.valueAt (0))).parameters(), ((RoutineHeader)(yystack.valueAt (0))).returnType(), Optional.empty(), ((RoutineHeader)(yystack.valueAt (0))).position()
-        );
-      };
+    /* "src/main/bison/parser.y":629  */
+      { yyval = ((RoutineHeader)(yystack.valueAt (0))).declaration(Optional.empty()); };
   break;
 
 
   case 111: /* routine_declaration: routine_header routine_body  */
   if (yyn == 111)
-    /* "src/main/bison/parser.y":657  */
-      {
-        yyval = new RoutineDeclaration(
-            ((RoutineHeader)(yystack.valueAt (1))).name(), ((RoutineHeader)(yystack.valueAt (1))).parameters(), ((RoutineHeader)(yystack.valueAt (1))).returnType(), Optional.of(((RoutineBody)(yystack.valueAt (0)))), ((RoutineHeader)(yystack.valueAt (1))).position()
-        );
-      };
+    /* "src/main/bison/parser.y":631  */
+      { yyval = ((RoutineHeader)(yystack.valueAt (1))).declaration(Optional.of(((RoutineBody)(yystack.valueAt (0))))); };
   break;
 
 
   case 112: /* routine_header: ROUTINE IDENTIFIER LPAREN optional_parameters RPAREN optional_return_type  */
   if (yyn == 112)
-    /* "src/main/bison/parser.y":666  */
+    /* "src/main/bison/parser.y":637  */
       {
-        yyval = new RoutineHeader(
-            ((Token)(yystack.valueAt (4))).getStringValue(), ((ParameterList)(yystack.valueAt (2))).values(), Optional.ofNullable(((TypeNode)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (5))))
-        );
+          yyval = new RoutineHeader(((Token)(yystack.valueAt (4))).getStringValue(), ((ParameterList)(yystack.valueAt (2))).values(),
+                  Optional.ofNullable(((TypeNode)(yystack.valueAt (0)))), position(((Token)(yystack.valueAt (5)))));
       };
   break;
 
 
   case 113: /* optional_parameters: %empty  */
   if (yyn == 113)
-    /* "src/main/bison/parser.y":675  */
+    /* "src/main/bison/parser.y":645  */
       { yyval = new ParameterList(); };
   break;
 
 
   case 114: /* optional_parameters: parameter_list  */
   if (yyn == 114)
-    /* "src/main/bison/parser.y":677  */
+    /* "src/main/bison/parser.y":647  */
       { yyval = ((ParameterList)(yystack.valueAt (0))); };
   break;
 
 
   case 115: /* parameter_list: parameter  */
   if (yyn == 115)
-    /* "src/main/bison/parser.y":682  */
+    /* "src/main/bison/parser.y":652  */
       {
-        ParameterList parameters = new ParameterList();
-        parameters.addLast(((Parameter)(yystack.valueAt (0))));
-        yyval = parameters;
+          ParameterList parameters = new ParameterList();
+          parameters.addLast(((Parameter)(yystack.valueAt (0))));
+          yyval = parameters;
       };
   break;
 
 
   case 116: /* parameter_list: parameter_list COMMA parameter  */
   if (yyn == 116)
-    /* "src/main/bison/parser.y":688  */
-      { ((ParameterList)(yystack.valueAt (2))).addLast(((Parameter)(yystack.valueAt (0)))); yyval = ((ParameterList)(yystack.valueAt (2))); };
+    /* "src/main/bison/parser.y":658  */
+      {
+          ((ParameterList)(yystack.valueAt (2))).addLast(((Parameter)(yystack.valueAt (0))));
+          yyval = ((ParameterList)(yystack.valueAt (2)));
+      };
   break;
 
 
   case 117: /* parameter: IDENTIFIER COLON type  */
   if (yyn == 117)
-    /* "src/main/bison/parser.y":693  */
+    /* "src/main/bison/parser.y":666  */
       { yyval = new Parameter(((Token)(yystack.valueAt (2))).getStringValue(), ((TypeNode)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (2))))); };
   break;
 
 
   case 118: /* optional_return_type: %empty  */
   if (yyn == 118)
-    /* "src/main/bison/parser.y":698  */
+    /* "src/main/bison/parser.y":671  */
       { yyval = null; };
   break;
 
 
   case 119: /* optional_return_type: COLON type  */
   if (yyn == 119)
-    /* "src/main/bison/parser.y":700  */
+    /* "src/main/bison/parser.y":673  */
       { yyval = ((TypeNode)(yystack.valueAt (0))); };
   break;
 
 
   case 120: /* routine_body: IS body END  */
   if (yyn == 120)
-    /* "src/main/bison/parser.y":705  */
-      { yyval = new BlockRoutineBody(new Block(((BlockItemList)(yystack.valueAt (1))).values(), position(((Token)(yystack.valueAt (2))))), position(((Token)(yystack.valueAt (2))))); };
+    /* "src/main/bison/parser.y":678  */
+      {
+          SourcePosition start = position(((Token)(yystack.valueAt (2))));
+          yyval = new BlockRoutineBody(new Block(((BlockItemList)(yystack.valueAt (1))).values(), start), start);
+      };
   break;
 
 
   case 121: /* routine_body: RETIMM expression  */
   if (yyn == 121)
-    /* "src/main/bison/parser.y":707  */
+    /* "src/main/bison/parser.y":683  */
       { yyval = new ExpressionRoutineBody(((Expression)(yystack.valueAt (0))), position(((Token)(yystack.valueAt (1))))); };
   break;
 
 
 
-/* "src/main/java/com/compiler/parser/Parser.java":1646  */
+/* "src/main/java/com/compiler/parser/Parser.java":1679  */
 
         default: break;
       }
@@ -2354,27 +2387,34 @@ private static final short[] yycheck_ = yycheck_init();
   private static final int YYNTOKENS_ = 57;
 
 /* Unqualified %code blocks.  */
-/* "src/main/bison/parser.y":66  */
+/* "src/main/bison/parser.y":67  */
 
     private Program program;
 
     /**
-     * Returns the AST after parse() has returned true.
+     * Returns the AST after a successful parse.
+     *
      * @throws IllegalStateException if no program has been constructed
      */
     public Program getProgram() {
         if (program == null) {
-            throw new IllegalStateException("No program AST is available; parse() must succeed first.");
+            throw new IllegalStateException(
+                    "No program AST is available; parse() must succeed first.");
         }
         return program;
+    }
+
+    private static BinaryExpression binary(BinaryOperator operator,
+            Expression left, Expression right) {
+        return new BinaryExpression(operator, left, right, left.position());
     }
 
     private static SourcePosition position(Token token) {
         return new SourcePosition(token.getLine(), token.getColumn());
     }
 
-/* "src/main/java/com/compiler/parser/Parser.java":2377  */
+/* "src/main/java/com/compiler/parser/Parser.java":2417  */
 
 }
-/* "src/main/bison/parser.y":743  */
+/* "src/main/bison/parser.y":713  */
 

@@ -3,277 +3,187 @@ package com.compiler.lexer;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
-/**
- * Reads characters from a {@link Reader} and produces {@link Token}s one at a time via {@link #nextToken()}.
- * <p>The lexer tracks line and column numbers (both 1-based) so that error messages can point to the exact
- * source location.
- */
+/** Scans source tokens and records their one-based line and column. */
 public final class Lexer {
-
-    private final PushbackReader reader;
-
-    // To restore the column when the newline was read
-    private int previousLineColumn = 1;
-
-    // Current position
-    private int line = 1;
-    private int column = 1;
-
-    // Token start position (captured before scanning a token)
-    private int tokenLine;
-    private int tokenColumn;
-
-    private static final Map<String, Integer> KEYWORDS = new HashMap<>();    // Keyword lookup table
-
-    /** Sentinel returned by {@link #read()} at end of input. {@code '\uFFFF'} is a Unicode non-character. */
     private static final char EOF = '\uFFFF';
 
-    static {
-        KEYWORDS.put("routine", TokenConstants.ROUTINE);
-        KEYWORDS.put("var",     TokenConstants.VAR);
-        KEYWORDS.put("type",    TokenConstants.TYPE);
-        KEYWORDS.put("is",      TokenConstants.IS);
-        KEYWORDS.put("end",     TokenConstants.END);
-        KEYWORDS.put("if",      TokenConstants.IF);
-        KEYWORDS.put("then",    TokenConstants.THEN);
-        KEYWORDS.put("else",    TokenConstants.ELSE);
-        KEYWORDS.put("while",   TokenConstants.WHILE);
-        KEYWORDS.put("loop",    TokenConstants.LOOP);
-        KEYWORDS.put("for",     TokenConstants.FOR);
-        KEYWORDS.put("in",      TokenConstants.IN);
-        KEYWORDS.put("reverse", TokenConstants.REVERSE);
-        KEYWORDS.put("return",  TokenConstants.RETURN);
-        KEYWORDS.put("print",   TokenConstants.PRINT);
-        KEYWORDS.put("record",  TokenConstants.RECORD);
-        KEYWORDS.put("array",   TokenConstants.ARRAY);
-        KEYWORDS.put("integer", TokenConstants.INTEGER);
-        KEYWORDS.put("real",    TokenConstants.REAL);
-        KEYWORDS.put("boolean", TokenConstants.BOOLEAN);
-        KEYWORDS.put("true",    TokenConstants.TRUE);
-        KEYWORDS.put("false",   TokenConstants.FALSE);
-        KEYWORDS.put("new",     TokenConstants.NEW);
-        KEYWORDS.put("null",    TokenConstants.NULL);
-        KEYWORDS.put("and",     TokenConstants.AND);
-        KEYWORDS.put("or",      TokenConstants.OR);
-        KEYWORDS.put("xor",     TokenConstants.XOR);
-        KEYWORDS.put("not",     TokenConstants.NOT);
-    }
+    // A number followed by ".." can require pushing back both dots.
+    private final PushbackReader reader;
+    private int line = 1;
+    private int column = 1;
+    private int previousLineColumn = 1;
+    private int tokenLine;
+    private int tokenColumn;
 
     public Lexer(Reader reader) {
         this.reader = new PushbackReader(reader, 2);
     }
 
-    // to get rid of each time passing line and column into token's constructor:
-    private Token makeToken(int type) {
-        return new Token(type, tokenLine, tokenColumn);
-    }
-
-    private Token makeToken(int type, Object value) {
-        return new Token(type, value, tokenLine, tokenColumn);
-    }
-
-    /**
-     * Scans and returns the next token from the input.
-     * @return the next {@link Token}; never {@code null}
-     * @throws IOException if reading from the underlying stream fails
-     */
+    /** Returns the next token, including newline and end-of-input tokens. */
     public Token nextToken() throws IOException {
         skipWhitespaceAndComments();
-        // Capture position before reading the first character
         tokenLine = line;
         tokenColumn = column;
 
-        char ch = read();
-        if (ch == EOF) return makeToken(TokenConstants.EOF);
-        if (Character.isLetter(ch) || ch == '_') return scanIdentifier(ch);
-        if (Character.isDigit(ch)) return scanNumber(ch);
-        return scanOperator(ch);
+        char first = read();
+        if (first == EOF) {
+            return token(TokenConstants.EOF);
+        }
+        if (Character.isLetter(first) || first == '_') {
+            return scanWord(first);
+        }
+        if (Character.isDigit(first)) {
+            return scanNumber(first);
+        }
+        return scanOperator(first);
     }
 
-    private Token scanOperator(char ch) throws IOException {
-        char next;
-        switch (ch) {
-            case ':':
-                next = read();
-                if (next == '=') return makeToken(TokenConstants.ASSIGN);
-                unread(next);
-                return makeToken(TokenConstants.COLON);
-
-            case '<':
-                next = read();
-                if (next == '=') return makeToken(TokenConstants.LE);
-                unread(next);
-                return makeToken(TokenConstants.LT);
-
-            case '>':
-                next = read();
-                if (next == '=') return makeToken(TokenConstants.GE);
-                unread(next);
-                return makeToken(TokenConstants.GT);
-
-            case '/':
-                next = read();
-                if (next == '=') return makeToken(TokenConstants.NEQ);
-                unread(next);
-                return makeToken(TokenConstants.SLASH);
-
-            case '.':
-                next = read();
-                if (next == '.') return makeToken(TokenConstants.DOTDOT);
-                unread(next);
-                return makeToken(TokenConstants.DOT);
-
-            case '=':
-                next = read();
-                if (next == '>') return makeToken(TokenConstants.RETIMM);
-                unread(next);
-                return makeToken(TokenConstants.EQ);
-
-            case '+' : return makeToken(TokenConstants.PLUS);
-            case '-' : return makeToken(TokenConstants.MINUS);
-            case '*' : return makeToken(TokenConstants.STAR);
-            case '%' : return makeToken(TokenConstants.PERCENT);
-            case '(' : return makeToken(TokenConstants.LPAREN);
-            case ')' : return makeToken(TokenConstants.RPAREN);
-            case '[' : return makeToken(TokenConstants.LBRACKET);
-            case ']' : return makeToken(TokenConstants.RBRACKET);
-            case ',' : return makeToken(TokenConstants.COMMA);
-            case ';' : return makeToken(TokenConstants.SEMICOLON);
-            case '\n': return makeToken(TokenConstants.NEWLINE);
-            default  : return makeToken(TokenConstants.UNKNOWN, String.valueOf(ch));
+    private Token scanWord(char first) throws IOException {
+        StringBuilder word = new StringBuilder().append(first);
+        char next = read();
+        while (Character.isLetterOrDigit(next) || next == '_') {
+            word.append(next);
+            next = read();
         }
-    }
+        unread(next);
 
-    private Token scanIdentifier(char firstChar) throws IOException {
-        StringBuilder sb = new StringBuilder().append(firstChar);
-
-        while (true) {
-            char ch = read();
-            if (Character.isLetterOrDigit(ch) || ch == '_') {
-                sb.append(ch);
-            } else {
-                unread(ch);
-                break;
-            }
-        }
-
-        String text = sb.toString();
-        Integer keywordType = KEYWORDS.get(text);
-
-        if (keywordType != null) {
-            return switch (keywordType) {
-                case TokenConstants.TRUE -> makeToken(TokenConstants.TRUE, Boolean.TRUE);
-                case TokenConstants.FALSE -> makeToken(TokenConstants.FALSE, Boolean.FALSE);
-                case TokenConstants.NULL -> makeToken(TokenConstants.NULL, null);
-                default -> makeToken(keywordType);
-            };
-        }
-
-        return makeToken(TokenConstants.IDENTIFIER, text);
+        String spelling = word.toString();
+        int type = TokenConstants.wordType(spelling);
+        return switch (type) {
+            case TokenConstants.IDENTIFIER -> token(type, spelling);
+            case TokenConstants.TRUE -> token(type, true);
+            case TokenConstants.FALSE -> token(type, false);
+            default -> token(type);
+        };
     }
 
     private Token scanNumber(char first) throws IOException {
-        StringBuilder sb = new StringBuilder().append(first);
-
-        boolean isReal = false;
-        while (true) {
-            char ch = read();
-            if (Character.isDigit(ch)) {
-                sb.append(ch);
-            } else if (ch == '.' && !isReal) {
-                char after = read();  // a real number must have a digit after the dot
-                if (Character.isDigit(after)) {
-                    isReal = true;
-                    sb.append(ch);
-                    sb.append(after);
-                } else { // not a decimal point (syntax error or ..)
-                    unread(after);
-                    unread(ch);
-                    break;
-                }
+        StringBuilder digits = new StringBuilder().append(first);
+        char next = readDigits(digits);
+        boolean real = false;
+        if (next == '.') {
+            char fraction = read();
+            if (Character.isDigit(fraction)) {
+                digits.append('.').append(fraction);
+                next = readDigits(digits);
+                real = true;
             } else {
-                unread(ch);
-                break;
+                // Leave a field selector or range operator for the next token.
+                unread(fraction);
             }
         }
+        unread(next);
 
-        String text = sb.toString();
+        String spelling = digits.toString();
         try {
-            if (isReal) {
-                return makeToken(TokenConstants.REAL_LITERAL, Double.parseDouble(text));
-            } else {
-                return makeToken(TokenConstants.INTEGER_LITERAL, Integer.parseInt(text));
+            if (real) {
+                return token(TokenConstants.REAL_LITERAL,
+                        Double.parseDouble(spelling));
             }
-        } catch (NumberFormatException e) {
-            return makeToken(TokenConstants.UNKNOWN, text);
+            return token(TokenConstants.INTEGER_LITERAL,
+                    Integer.parseInt(spelling));
+        } catch (NumberFormatException exception) {
+            return token(TokenConstants.UNKNOWN, spelling);
         }
+    }
+
+    /** Appends consecutive digits and returns the character after them. */
+    private char readDigits(StringBuilder digits) throws IOException {
+        char next = read();
+        while (Character.isDigit(next)) {
+            digits.append(next);
+            next = read();
+        }
+        return next;
+    }
+
+    private Token scanOperator(char first) throws IOException {
+        int type = switch (first) {
+            case ':' -> match('=')
+                    ? TokenConstants.ASSIGN : TokenConstants.COLON;
+            case '<' -> match('=') ? TokenConstants.LE : TokenConstants.LT;
+            case '>' -> match('=') ? TokenConstants.GE : TokenConstants.GT;
+            case '/' -> match('=') ? TokenConstants.NEQ : TokenConstants.SLASH;
+            case '.' -> match('.') ? TokenConstants.DOTDOT : TokenConstants.DOT;
+            case '=' -> match('>') ? TokenConstants.RETIMM : TokenConstants.EQ;
+            case '+' -> TokenConstants.PLUS;
+            case '-' -> TokenConstants.MINUS;
+            case '*' -> TokenConstants.STAR;
+            case '%' -> TokenConstants.PERCENT;
+            case '(' -> TokenConstants.LPAREN;
+            case ')' -> TokenConstants.RPAREN;
+            case '[' -> TokenConstants.LBRACKET;
+            case ']' -> TokenConstants.RBRACKET;
+            case ',' -> TokenConstants.COMMA;
+            case ';' -> TokenConstants.SEMICOLON;
+            case '\n' -> TokenConstants.NEWLINE;
+            default -> TokenConstants.UNKNOWN;
+        };
+        if (type == TokenConstants.UNKNOWN) {
+            return token(type, String.valueOf(first));
+        }
+        return token(type);
+    }
+
+    /** Consumes the next character only when it matches the expected one. */
+    private boolean match(char expected) throws IOException {
+        char next = read();
+        if (next == expected) {
+            return true;
+        }
+        unread(next);
+        return false;
     }
 
     private void skipWhitespaceAndComments() throws IOException {
         while (true) {
-            char ch = read();
-            if (ch == EOF) return;
-
-            if (ch == ' ' || ch == '\t' || ch == '\r') {
+            char next = read();
+            if (next == ' ' || next == '\t' || next == '\r') {
                 continue;
             }
-
-            if (ch == '/') {
-                char next = read();
-                if (next == '/') {
-                    while (true) {
-                        ch = read();
-                        if (ch == EOF || ch == '\n') break;
-                    }
-
-                    /*
-                    Example:
-                        var x integer // some comment
-                        var y integer
-
-                    If the newline is not read back,
-                    the variable declarations are not separated
-                    */
-                    if (ch == '\n') {
-                        unread(ch);
-                    }
-
-                    continue;
-                }
-                // it's division, push back both characters
+            if (next == '/' && match('/')) {
+                // A newline after a comment still separates statements.
+                do {
+                    next = read();
+                } while (next != '\n' && next != EOF);
                 unread(next);
-                unread(ch);
-                return;
+                continue;
             }
-            unread(ch);
+            unread(next);
             return;
         }
     }
 
-    /** Reads one character, updating line/column tracking. Returns {@link #EOF} at end of input. */
-    private char read() throws IOException {
-        int ch = reader.read();
-        if (ch == -1) return EOF;
+    private Token token(int type) {
+        return new Token(type, tokenLine, tokenColumn);
+    }
 
-        if (ch == '\n') {
+    private Token token(int type, Object value) {
+        return new Token(type, value, tokenLine, tokenColumn);
+    }
+
+    private char read() throws IOException {
+        int next = reader.read();
+        if (next == -1) {
+            return EOF;
+        }
+        if (next == '\n') {
             previousLineColumn = column;
             line++;
             column = 1;
         } else {
             column++;
         }
-        return (char) ch;
+        return (char) next;
     }
 
-    /** Pushes one character back, undoing line/column tracking. */
-    private void unread(char ch) throws IOException {
-        if (ch == EOF) return;
-        reader.unread(ch);
-
-        if (ch == '\n') {
+    private void unread(char character) throws IOException {
+        if (character == EOF) {
+            return;
+        }
+        reader.unread(character);
+        if (character == '\n') {
             line--;
             column = previousLineColumn;
         } else {

@@ -1,9 +1,9 @@
 package com.compiler.parser.support;
 
-import com.compiler.ast.expression.MemberInitialization;
-
 import java.util.LinkedList;
 import java.util.List;
+
+import com.compiler.ast.expression.MemberInitialization;
 
 /** Typed accumulator for the grammar's right-recursive lists. */
 public final class MemberInitializationList {

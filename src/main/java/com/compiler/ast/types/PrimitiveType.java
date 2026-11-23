@@ -1,15 +1,13 @@
 package com.compiler.ast.types;
 
+import com.compiler.ast.AstPrinter;
 import com.compiler.ast.SourcePosition;
 
-public record PrimitiveType(
-    PrimitiveKind kind,
-    SourcePosition position
-) implements TypeNode{
+public record PrimitiveType(PrimitiveKind kind, SourcePosition position)
+        implements TypeNode {
 
     @Override
-    public void prettyPrint(int h) {
-        String indent = "  ".repeat(h);
-        System.out.println(indent + "[PrimitiveType kind=" + kind + " " + position.toString() + "]");
+    public void prettyPrint(int depth) {
+        AstPrinter.leaf(depth, "PrimitiveType kind=" + kind, position);
     }
 }
