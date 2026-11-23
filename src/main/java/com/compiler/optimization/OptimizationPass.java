@@ -22,6 +22,7 @@ import com.compiler.ast.expression.BinaryExpression;
 import com.compiler.ast.expression.BooleanLiteral;
 import com.compiler.ast.expression.Expression;
 import com.compiler.ast.expression.FieldAccess;
+import com.compiler.ast.expression.Identifier;
 import com.compiler.ast.expression.IndexAccess;
 import com.compiler.ast.expression.IntegerLiteral;
 import com.compiler.ast.expression.MemberInitialization;
@@ -180,9 +181,8 @@ final class OptimizationPass {
         }
 
         // Keep initializers that may call a routine, allocate or throw.
-        return optimized.initializer()
-                .map(OptimizationPass::isScalarLiteral)
-                .orElse(true);
+        return optimized.initializer().isEmpty() || isScalarLiteral(optimized.initializer().get()) 
+                || optimized.initializer().get() instanceof Identifier;
     }
 
     private static boolean isScalarLiteral(Expression expression) {
