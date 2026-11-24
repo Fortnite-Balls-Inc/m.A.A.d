@@ -9,56 +9,100 @@ The compiler is implemented in **Java**, with the parser generated using **Bison
 - [Semen Nadutkin](mailto:s.nadutkin@innopolis.university)
 - [Igor Baranov](mailto:ig.baranov@innopolis.university)
 
-## Code generation
+## Compiling from Source
 
-Requires JDK 21 or newer. The compiler runs semantic analysis, optimizes the AST,
-then generates Jasmin using semantic metadata for the optimized tree.
+### Generating the Parser
+
+_This step is optional. The generated parser files are already included in `src/main/java/com/compiler/parser`._
+
+**Requirements**: Bison 3.8.2+
+
+- Linux / macOS
+
+   ```sh
+   bison -Wall                                             \
+         -o src/main/java/com/compiler/parser/Parser.java  \
+         src/main/bison/parser.y
+   ```
+
+- Windows
+
+   ```powershell
+   bison -Wall -o src\main\java\com\compiler\parser\Parser.java src\main\bison\parser.y
+   ```
+
+### Building the Compiler
+
+The executable JAR is generated at `target/maad.jar` _(`target\maad.jar` in Windows)._
+
+**Requirements**: Apache Maven 3.9.12+, JDK 21+
 
 ```sh
-mvn compile
-java -cp target/classes com.compiler.Main examples/simple_main.maad
-java -jar jasmin.jar examples/simple_main.j
-java -cp examples simple_main 2.0
+mvn package
 ```
 
-The optional second argument sets the output `.j` path; `--ast` prints the AST instead.
-`--ast` shows the parsed source before semantic analysis and optimization.
-Records produce additional `<class>$RecordN.j` files; assemble these with Jasmin too.
-The JVM entry point calls `main` or `Main`, parsing primitive parameters from command-line arguments.
-Arrays use 1-based indexing. `print` writes each value on its own line.
-End-to-end checks: `python3 tests/codegen.py /path/to/jasmin.jar` (after `mvn compile`).
+## Running m.A.A.d
 
-## Reading the compiler
+_**Prerequisites**: all necessary steps from the **Compiling from Source** stage._
 
-1. Follow a source file through tokenization and parsing. The grammar actions
-   build the AST that you can inspect with `--ast`. [Main.java](src/main/java/com/compiler/Main.java) · [parser.y](src/main/bison/parser.y)
-2. Trace the compilation stages and the semantic pass that assigns types and
-   binds each identifier to its declaration. [CompilerOutput.java](src/main/java/com/compiler/CompilerOutput.java) · [AnalysisPass.java](src/main/java/com/compiler/semantic/AnalysisPass.java)
-3. Follow a block through optimization, then see how the rewritten tree becomes
-   JVM classes. [OptimizationPass.java](src/main/java/com/compiler/optimization/OptimizationPass.java) · [JasminGenerator.java](src/main/java/com/compiler/codegen/JasminGenerator.java)
+**Requirements**: JDK 21+
 
-## Semantics and optimization
+### Linux / macOS
 
-Names must be declared before use; forward routine declarations support later
-definitions and mutual recursion. Diagnostics include source locations and codes
-from `DiagnosticCode`; semantic errors prevent code generation.
+```sh
+# Compile to Jasmin Assembly
+./maad compile <source>.maad [-o <target>.j]
 
-The optimizer folds constant expressions, removes constant branches and empty loops,
-and eliminates unreachable statements and safe unused scalar locals. All source
-code is checked before optimization, including branches that will be removed.
-
-Real-to-integer conversion uses `Math.round` (ties toward positive infinity).
-Real-to-boolean conversion is rejected; integer constants converted to boolean
-must be 0 or 1. Runtime real-to-integer overflow raises `ArithmeticException`.
-
-Examples: `examples/semantic/valid.maad`, `optimizations.maad`, and `errors.maad`.
-
-## Parser
-
-Generate Java parser from Bison source:
-
+# Run a program
+./maad run <source>.maad <starting-routine> [<arg_1> ... <arg_N>]
 ```
-bison -Wall                                             \
-      -o src/main/java/com/compiler/parser/Parser.java  \
-      src/main/bison/parser.y
+
+**Examples**:
+
+1. Running a program
+
+   ```sh
+   # Factorial of 5
+   # Output: 120
+   ./maad run examples/recursion.maad Main 5
+   ```
+
+2. Compiling `.maad` to `.j`
+
+   ```sh
+   # The result is written to recursion.j
+   ./maad compile examples/recursion.maad
+
+   # The result is written to examples/custom.j
+   ./maad compile examples/recursion.maad -o examples/custom.j
+   ```
+
+### Windows
+
+```powershell
+# Compile to Jasmin Assembly
+.\maad.cmd compile <source>.maad [-o <target>.j]
+
+# Run a program
+.\maad run <source>.maad <starting-routine> [<arg_1> ... <arg_N>]
 ```
+
+**Examples**:
+
+1. Running a program
+
+   ```powershell
+   # Factorial of 5
+   # Output: 120
+   .\maad.cmd run examples\recursion.maad Main 5
+   ```
+
+2. Compiling `.maad` to `.j`
+
+   ```powershell
+   # The result is written to recursion.j
+   .\maad.cmd compile examples\recursion.maad
+
+   # The result is written to examples\custom.j
+   .\maad.cmd compile examples\recursion.maad -o examples\custom.j
+   ```
