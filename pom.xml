@@ -13,8 +13,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>21</maven.compiler.release>
   </properties>
-  
+
+  <dependencies>
+    <dependency>
+      <groupId>ca.mcgill.sable</groupId>
+      <artifactId>jasmin</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+  </dependencies>
+
   <build>
+    <finalName>maad</finalName>
+
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -23,6 +33,28 @@
         <configuration>
           <mainClass>com.compiler.Main</mainClass>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>com.compiler.Main</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

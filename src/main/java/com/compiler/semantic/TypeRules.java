@@ -43,8 +43,7 @@ final class TypeRules {
                 && source instanceof SemanticType.Array from) {
             // Reference assignment preserves the array's element type.
             return sameType(to.element(), from.element())
-                    && to.identity() == from.identity()
-                    && (to.size() == null || to.size().equals(from.size()));
+                    && to.identity() == from.identity();
         }
         return false;
     }
@@ -56,7 +55,6 @@ final class TypeRules {
         if (first instanceof SemanticType.Array left
                 && second instanceof SemanticType.Array right) {
             return left.identity() == right.identity()
-                    && Objects.equals(left.size(), right.size())
                     && sameType(left.element(), right.element());
         }
         return false;
