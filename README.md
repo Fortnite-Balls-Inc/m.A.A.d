@@ -84,7 +84,7 @@ _**Prerequisites**: all necessary steps from the **Compiling from Source** stage
 .\maad.cmd compile <source>.maad [-o <target>.j]
 
 # Run a program
-.\maad run <source>.maad <starting-routine> [<arg_1> ... <arg_N>]
+.\maad.cmd run <source>.maad <starting-routine> [<arg_1> ... <arg_N>]
 ```
 
 **Examples**:
