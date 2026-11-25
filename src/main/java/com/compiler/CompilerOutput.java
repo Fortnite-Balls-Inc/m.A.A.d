@@ -42,7 +42,8 @@ final class CompilerOutput {
 
     private static String outputClassName(Path output) {
         String fileName = output.getFileName().toString();
-        String className = fileName.replaceFirst("\\.j$", "");
+        String className = fileName.replaceFirst("\\.j$", "")
+                                    .replaceAll("[^A-Za-z_0-9]", "_");
         if (!className.matches("[A-Za-z_][A-Za-z_0-9]*")) {
             throw new IllegalArgumentException(
                     "Output class name must be a valid identifier: "
